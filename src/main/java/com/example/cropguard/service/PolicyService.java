@@ -1,0 +1,75 @@
+package com.example.cropguard.service;
+
+import com.example.cropguard.domain.Deductible;
+import com.example.cropguard.dto.PolicyDto;
+import com.example.cropguard.entity.Plot;
+import com.example.cropguard.entity.Policy;
+import com.example.cropguard.exception.BusinessException;
+import com.example.cropguard.exception.ResourceNotFoundException;
+import com.example.cropguard.repository.PolicyRepository;
+import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class PolicyService {
+
+    private final PolicyRepository policyRepository;
+    private final PlotService plotService;
+    private final PremiumCalculator premiumCalculator;
+
+    public PolicyService(PolicyRepository policyRepository, PlotService plotService,
+                         PremiumCalculator premiumCalculator) {
+        this.policyRepository = policyRepository;
+        this.plotService = plotService;
+        this.premiumCalculator = premiumCalculator;
+    }
+
+    public Policy create(PolicyDto dto) {
+        Plot plot = plotService.findById(dto.plotId());
+        Deductible deductible = dto.deductible() != null ? dto.deductible() : Deductible.NONE;
+
+        if (dto.coverageEnd().isBefore(dto.coverageStart())) {
+            throw new BusinessException("Coverage end must be after start");
+        }
+
+        var premium = premiumCalculator.calculate(
+            plot.getCropType(), plot.getHectares(), plot.getBundesland(),
+            deductible, dto.coverageEur());
+
+        if (dto.coverageEur() < premium.premiumEur() * 10) {
+            throw new BusinessException(
+                "Coverage must be at least 10x the premium (min: "
+                    + (premium.premiumEur() * 10) + " EUR)");
+        }
+
+        Policy policy = new Policy(
+            dto.coverageEur(),
+            premium.premiumEur(),
+            deductible,
+            Policy.Status.valueOf(dto.effectiveStatus()),
+            dto.coverageStart(),
+            dto.coverageEnd(),
+            plot
+        );
+        return policyRepository.save(policy);
+    }
+
+    public PremiumCalculator.PremiumResult quote(
+            com.example.cropguard.domain.CropType cropType,
+            double hectares,
+            com.example.cropguard.domain.Bundesland bundesland,
+            Deductible deductible,
+            double coverageEur) {
+        return premiumCalculator.calculate(cropType, hectares, bundesland, deductible, coverageEur);
+    }
+
+    public List<Policy> findByInsuredId(Long insuredId) {
+        return policyRepository.findByPlotInsuredId(insuredId);
+    }
+
+    public Policy findById(Long id) {
+        return policyRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Policy", id));
+    }
+}

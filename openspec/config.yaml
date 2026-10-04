@@ -1,0 +1,8 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Java 21, Spring Boot 3.3.5, Spring Data JPA, H2, Spring Security, JWT (jjwt 0.12.6), Actuator, Validation.
+  Domain: Agricultural hail insurance (German market — Bundesländer, EUR, DWD hail risk data).
+  This is a demo project for a Spring Boot course at courses.graphwiz.ai.
+  Every module (1-10) must be demonstrable in the code.
+  Convention: constructor injection, records for DTOs, RFC 7807 ProblemDetail for errors.

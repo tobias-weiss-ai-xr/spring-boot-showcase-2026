@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    show-sql: true
+  logging:
+    level:
+      com.example.cropguard: DEBUG
+      org.hibernate.SQL: DEBUG
+      org.springframework.security: DEBUG
+
+logging:
+  level:
+    com.example.cropguard: DEBUG
