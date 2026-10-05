@@ -11,8 +11,10 @@ claims (Schaeden) which assessors (Gutachter) review, calculate payouts, and app
 
 - **Bundesland-based risk zones** — 16 German federal states with DWD-based hail
   risk factors (Bayern 1.5x, Hessen 1.0x baseline, Schleswig-Holstein 0.8x)
+- **DWD drought index** — 1km grid (July 1991–2020, CC-BY 4.0) loaded at startup,
+  location-specific drought adjustment via GK3 coordinates (0.8–1.5x)
 - **Crop type catalog** — 14 crops from WHEAT (45 EUR/ha) to HOPS (350 EUR/ha)
-- **Premium calculation** — `base × hectares × bundesland.riskFactor × deductible.premiumFactor`
+- **Premium calculation** — `base × hectares × bundesland.riskFactor × droughtAdjustment × deductible.premiumFactor`
 - **Claim workflow** — SUBMITTED → ASSESSED → APPROVED/REJECTED with payout calculation
 - **Hail events** — batch linking of claims to registered storms
 
@@ -38,7 +40,7 @@ curl -X POST http://localhost:8080/api/insureds \
 Quote a policy for 25 ha wheat in Bayern:
 
 ```bash
-curl "http://localhost:8080/api/policies/quote?cropType=WHEAT&hectares=25&bundesland=BAYERN&deductible=TEN_PERCENT&coverageEur=25000"
+curl "http://localhost:8080/api/policies/quote?cropType=WHEAT&hectares=25&bundesland=BAYERN&deductible=TEN_PERCENT&coverageEur=25000&coordinateE=3700000&coordinateN=5570000"
 ```
 
 Create a policy:
@@ -106,5 +108,5 @@ src/main/java/com/example/cropguard/
 ├── exception/                   # RFC 7807 error handling (M6)
 ├── repository/                  # Spring Data JPA (M5)
 ├── security/                    # JWT auth (M8)
-└── service/                     # Business logic (M2)
+└── service/                     # Business logic (M2), DwdRiskGridService (DWD grid)
 ```
