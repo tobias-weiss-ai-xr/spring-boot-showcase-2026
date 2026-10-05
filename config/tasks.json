@@ -5,7 +5,7 @@
       "title": "Create PolicyService, ClaimService, HailEventService with domain logic",
       "deps": [],
       "scope": ["src/main/java/com/example/cropguard/service/PolicyService.java", "src/main/java/com/example/cropguard/service/ClaimService.java", "src/main/java/com/example/cropguard/service/HailEventService.java"],
-      "accept": "cd /tmp/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
+      "accept": "cd /c/Users/Tobias/git/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
       "acceptance_prose": "Three service classes compile. PolicyService creates policies with premium validation. ClaimService implements submit→assess workflow with status machine. HailEventService registers events and links claims.",
       "manual": false,
       "priority": 1
@@ -15,7 +15,7 @@
       "title": "Create ClaimController and HailEventController with REST endpoints and @PreAuthorize",
       "deps": ["SERVICES"],
       "scope": ["src/main/java/com/example/cropguard/controller/ClaimController.java", "src/main/java/com/example/cropguard/controller/HailEventController.java"],
-      "accept": "cd /tmp/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
+      "accept": "cd /c/Users/Tobias/git/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
       "acceptance_prove": "Two controllers compile. ClaimController: POST/GET/PUT endpoints, @PreAuthorize on assess. HailEventController: POST/GET endpoints.",
       "manual": false,
       "priority": 2
@@ -25,7 +25,7 @@
       "title": "Create JWT security: JwtService, JwtAuthFilter, SecurityConfig, AppProperties",
       "deps": [],
       "scope": ["src/main/java/com/example/cropguard/security/JwtService.java", "src/main/java/com/example/cropguard/security/JwtAuthFilter.java", "src/main/java/com/example/cropguard/config/SecurityConfig.java", "src/main/java/com/example/cropguard/config/AppProperties.java"],
-      "accept": "cd /tmp/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
+      "accept": "cd /c/Users/Tobias/git/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
       "acceptance_prose": "JWT auth compiles. SecurityConfig is stateless with BCrypt, method security. JwtAuthFilter extracts Bearer token. AppProperties is a record with @ConfigurationProperties.",
       "manual": false,
       "priority": 1
@@ -35,7 +35,7 @@
       "title": "Create DatabaseHealthIndicator, DataInitializer, application.yml, application-dev.yml",
       "deps": [],
       "scope": ["src/main/java/com/example/cropguard/actuator/DatabaseHealthIndicator.java", "src/main/java/com/example/cropguard/DataInitializer.java", "src/main/resources/application.yml", "src/main/resources/application-dev.yml"],
-      "accept": "cd /tmp/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
+      "accept": "cd /c/Users/Tobias/git/spring-boot-showcase-2026 && mvn compile -q 2>&1 | tail -5",
       "acceptance_prose": "Health indicator, data initializer, and YAML configs compile. DataInitializer seeds 1 farmer, 1 assessor, 1 plot, 1 policy, 1 claim, 1 hail event.",
       "manual": false,
       "priority": 1
@@ -45,7 +45,7 @@
       "title": "Create test suite: unit, slice, integration tests",
       "deps": ["SERVICES", "CONTROLLERS", "SECURITY", "INFRA"],
       "scope": ["src/test/java/com/example/cropguard/"],
-      "accept": "cd /tmp/spring-boot-showcase-2026 && mvn test -q 2>&1 | tail -10",
+      "accept": "cd /c/Users/Tobias/git/spring-boot-showcase-2026 && mvn test -q 2>&1 | tail -10",
       "acceptance_prose": "All tests pass: @SpringBootTest contextLoads, PolicyServiceTest (create, premium validation), ClaimServiceTest (submit, assess), ClaimControllerTest (create, 400, 403), PolicyControllerTest (create, 400), PolicyRepositoryTest (save, findByStatus).",
       "manual": false,
       "priority": 3
@@ -55,7 +55,7 @@
       "title": "Write README with quick start, API tour, module mapping, test pyramid",
       "deps": [],
       "scope": ["README.md"],
-      "accept": "test -f /tmp/spring-boot-showcase-2026/README.md && grep -q 'Quick Start' /tmp/spring-boot-showcase-2026/README.md",
+      "accept": "test -f /c/Users/Tobias/git/spring-boot-showcase-2026/README.md && grep -q 'Quick Start' /c/Users/Tobias/git/spring-boot-showcase-2026/README.md",
       "acceptance_prose": "README exists with Quick Start, API tour (curl examples), course-module mapping table, test pyramid, project structure.",
       "manual": false,
       "priority": 1
