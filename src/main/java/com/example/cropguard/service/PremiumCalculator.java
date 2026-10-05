@@ -26,12 +26,20 @@ public class PremiumCalculator {
     private static final double MAX_COVERAGE_EUR = 500_000.0;
     private static final double MIN_COVERAGE_TO_PREMIUM_RATIO = 10.0;
 
+    private final DwdRiskGridService dwdRiskGridService;
+
+    public PremiumCalculator(DwdRiskGridService dwdRiskGridService) {
+        this.dwdRiskGridService = dwdRiskGridService;
+    }
+
     public record PremiumResult(
         double premiumEur,
         double baseEur,
         double riskAdjustment,
         double deductibleAdjustment,
-        double coverageEur
+        double coverageEur,
+        int droughtIndex,
+        double droughtAdjustment
     ) {}
 
     /**
@@ -42,23 +50,37 @@ public class PremiumCalculator {
      * @param bundesland     German Bundesland with risk factor
      * @param deductible deductible option
      * @param coverageEur desired coverage amount in EUR
+     * @param coordinateE  GK3 easting (nullable — DWD drought lookup skipped if null)
+     * @param coordinateN  GK3 northing (nullable)
      * @return premium result with breakdown
      */
     public PremiumResult calculate(CropType cropType, double hectares, Bundesland bundesland,
-                                   Deductible deductible, double coverageEur) {
+                                   Deductible deductible, double coverageEur,
+                                   Double coordinateE, Double coordinateN) {
         validate(hectares, coverageEur);
 
         double base = cropType.getBaseRateEurPerHa() * hectares;
-        double riskAdjusted = base * bundesland.getRiskFactor();
+        double bundeslandFactor = bundesland.getRiskFactor();
+
+        int droughtIndex = 0;
+        double droughtAdj = 1.0;
+        if (coordinateE != null && coordinateN != null) {
+            droughtIndex = dwdRiskGridService.getDroughtIndex(coordinateE, coordinateN);
+            droughtAdj = dwdRiskGridService.getDroughtAdjustment(coordinateE, coordinateN);
+        }
+
+        double riskAdjusted = base * bundeslandFactor * droughtAdj;
         double deductibleAdjusted = riskAdjusted * deductible.getPremiumFactor();
         double premium = Math.max(MIN_PREMIUM_EUR, Math.round(deductibleAdjusted * 100.0) / 100.0);
 
         return new PremiumResult(
             premium,
             Math.round(base * 100.0) / 100.0,
-            bundesland.getRiskFactor(),
+            bundeslandFactor * droughtAdj,
             deductible.getPremiumFactor(),
-            coverageEur
+            coverageEur,
+            droughtIndex,
+            droughtAdj
         );
     }
 

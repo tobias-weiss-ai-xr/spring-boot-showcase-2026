@@ -44,8 +44,11 @@ public class PolicyController {
             @RequestParam double hectares,
             @RequestParam Bundesland bundesland,
             @RequestParam(required = false, defaultValue = "NONE") Deductible deductible,
-            @RequestParam double coverageEur) {
+            @RequestParam double coverageEur,
+            @RequestParam(required = false) Double coordinateE,
+            @RequestParam(required = false) Double coordinateN) {
         return ResponseEntity.ok(
-            policyService.quote(cropType, hectares, bundesland, deductible, coverageEur));
+            policyService.quote(cropType, hectares, bundesland, deductible, coverageEur,
+                coordinateE, coordinateN));
     }
 }

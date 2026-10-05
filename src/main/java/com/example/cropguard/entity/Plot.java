@@ -24,7 +24,7 @@ public class Plot {
     @Enumerated(EnumType.STRING)
     private Bundesland bundesland;
 
-    /** UTM coordinates (E, N) — for geo-locating the plot. */
+    /** Gauss-Krueger zone 3 coordinates (E, N) — for DWD drought index grid lookup. */
     @Column
     private Double coordinateE;
 

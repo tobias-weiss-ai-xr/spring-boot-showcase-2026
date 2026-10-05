@@ -35,7 +35,8 @@ public class PolicyService {
 
         var premium = premiumCalculator.calculate(
             plot.getCropType(), plot.getHectares(), plot.getBundesland(),
-            deductible, dto.coverageEur());
+            deductible, dto.coverageEur(),
+            plot.getCoordinateE(), plot.getCoordinateN());
 
         if (dto.coverageEur() < premium.premiumEur() * 10) {
             throw new BusinessException(
@@ -60,8 +61,10 @@ public class PolicyService {
             double hectares,
             com.example.cropguard.domain.Bundesland bundesland,
             Deductible deductible,
-            double coverageEur) {
-        return premiumCalculator.calculate(cropType, hectares, bundesland, deductible, coverageEur);
+            double coverageEur,
+            Double coordinateE, Double coordinateN) {
+        return premiumCalculator.calculate(cropType, hectares, bundesland, deductible, coverageEur,
+            coordinateE, coordinateN);
     }
 
     public List<Policy> findByInsuredId(Long insuredId) {

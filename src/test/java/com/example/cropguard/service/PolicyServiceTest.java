@@ -31,8 +31,8 @@ class PolicyServiceTest {
     void create_validPolicy_returnsSavedPolicy() {
         Plot plot = new Plot(CropType.WHEAT, 25.0, Bundesland.HESSEN, 0.0, 0.0, "test", null);
         when(plotService.findById(1L)).thenReturn(plot);
-        var premium = new PremiumCalculator.PremiumResult(1125.0, 1125.0, 1.0, 0.85, 25000.0);
-        when(premiumCalculator.calculate(any(), anyDouble(), any(), any(), anyDouble())).thenReturn(premium);
+        var premium = new PremiumCalculator.PremiumResult(1125.0, 1125.0, 1.0, 0.85, 25000.0, 2, 1.0);
+        when(premiumCalculator.calculate(any(), anyDouble(), any(), any(), anyDouble(), any(), any())).thenReturn(premium);
         when(policyRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         PolicyDto dto = new PolicyDto(null, 25000.0, Deductible.TEN_PERCENT,

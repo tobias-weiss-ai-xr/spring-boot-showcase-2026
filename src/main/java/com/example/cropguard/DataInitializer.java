@@ -43,7 +43,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Plot plot = plotRepo.save(new Plot(
             CropType.WHEAT, 25.0, Bundesland.HESSEN,
-            3456000.0, 5564000.0,
+            3533000.0, 5690000.0,
             "Feld am Rande von Kassel, Nordhessen", farmer));
 
         Policy policy = policyRepo.save(new Policy(
