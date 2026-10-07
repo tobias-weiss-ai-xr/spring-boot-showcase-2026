@@ -40,7 +40,7 @@ public class Claim {
     @Column
     private Long hailEventId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "policy_id", nullable = false)
     private Policy policy;
 

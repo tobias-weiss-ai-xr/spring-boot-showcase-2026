@@ -35,7 +35,7 @@ public class Plot {
     @Column(nullable = false)
     private String locationDescription;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "insured_id", nullable = false)
     private Insured insured;
 

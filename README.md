@@ -27,9 +27,16 @@ mvn spring-boot:run
 App starts at http://localhost:8080. H2 console at `/h2-console` (JDBC URL:
 `jdbc:h2:mem:cropguard`, user: `sa`, empty password).
 
+Seeded users (created by `DataInitializer`):
+
+| Email | Password | Role |
+|-------|----------|------|
+| `max@bauernhof.de` | `passwort123` | FARMER |
+| `lisa@cropguard.de` | `assessor123` | ASSESSOR |
+
 ## API Tour
 
-Register a farmer and get a JWT:
+Register a farmer:
 
 ```bash
 curl -X POST http://localhost:8080/api/insureds \
@@ -37,10 +44,19 @@ curl -X POST http://localhost:8080/api/insureds \
   -d '{"name":"Max Mustermann","email":"max@farm.de","password":"geheim123","role":"FARMER","bundesland":"HESSEN"}'
 ```
 
-Quote a policy for 25 ha wheat in Bayern:
+Log in and capture the JWT (role-based endpoints require it):
 
 ```bash
-curl "http://localhost:8080/api/policies/quote?cropType=WHEAT&hectares=25&bundesland=BAYERN&deductible=TEN_PERCENT&coverageEur=25000&coordinateE=3700000&coordinateN=5570000"
+TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"max@farm.de","password":"geheim123"}' | python -c "import sys,json; print(json.load(sys.stdin)['token'])")
+```
+
+Quote a policy for 25 ha wheat in Bayern (requires token):
+
+```bash
+curl "http://localhost:8080/api/policies/quote?cropType=WHEAT&hectares=25&bundesland=BAYERN&deductible=TEN_PERCENT&coverageEur=25000&coordinateE=3700000&coordinateN=5570000" \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 Create a policy:
@@ -48,6 +64,7 @@ Create a policy:
 ```bash
 curl -X POST http://localhost:8080/api/policies \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"coverageEur":25000,"deductible":"TEN_PERCENT","status":"ACTIVE","coverageStart":"2026-03-01","coverageEnd":"2026-12-31","plotId":1}'
 ```
 
@@ -56,10 +73,24 @@ File a claim after a hailstorm:
 ```bash
 curl -X POST http://localhost:8080/api/claims \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"damageDate":"2026-07-15","damageDescription":"Vollstaendiger Ernteverlust durch Hagel","policyId":1}'
 ```
 
-Actuator health (includes custom `DatabaseHealthIndicator`):
+Assess a claim — FARMER is forbidden (403), so log in as the seeded assessor:
+
+```bash
+ASSESSOR_TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"lisa@cropguard.de","password":"assessor123"}' | python -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
+curl -X PUT http://localhost:8080/api/claims/1/assess \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ASSESSOR_TOKEN" \
+  -d '{"damagePercent":80,"decision":"APPROVED","assessorNotes":"Total loss"}'
+```
+
+Actuator health (includes custom `DatabaseHealthIndicator`, public):
 
 ```bash
 curl http://localhost:8080/actuator/health
@@ -76,7 +107,7 @@ curl http://localhost:8080/actuator/health
 | 5. Spring Data JPA | `entity/` + `repository/` — derived query methods |
 | 6. Error Handling | `exception/GlobalExceptionHandler` — RFC 7807 ProblemDetail |
 | 7. Testing | `src/test/` — test pyramid (unit, slice, integration) |
-| 8. Security | `security/` + `config/SecurityConfig` — JWT, @PreAuthorize |
+| 8. Security | `security/` + `config/SecurityConfig` — JWT login (`/api/auth/login`), @PreAuthorize |
 | 9. Configuration | `config/AppProperties` + profiles (`application-dev.yml`) |
 | 10. Actuator | `actuator/DatabaseHealthIndicator` + `/actuator/health` |
 
@@ -92,7 +123,7 @@ curl http://localhost:8080/actuator/health
         └────────────┘
 ```
 
-Run with `mvn test`. 13 tests, all passing.
+Run with `mvn test`. 21 tests, all passing.
 
 ## Project Structure
 

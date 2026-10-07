@@ -36,7 +36,7 @@ public class Policy {
     @Column(nullable = false)
     private LocalDate coverageEnd;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plot_id", nullable = false)
     private Plot plot;
 

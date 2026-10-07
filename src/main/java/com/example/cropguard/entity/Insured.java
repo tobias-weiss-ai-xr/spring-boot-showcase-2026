@@ -42,6 +42,7 @@ public class Insured {
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public String getPasswordHash() { return passwordHash; }
     public String getRole() { return role; }
     public Bundesland getBundesland() { return bundesland; }
