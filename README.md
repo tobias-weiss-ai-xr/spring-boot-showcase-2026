@@ -150,6 +150,12 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
 
 Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 10 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, and the assessor claim workflow.
 
+## Architecture Documentation
+
+The software architecture is documented following the [arc42](https://arc42.org) template with
+full [C4 diagrams](https://c4model.com) (system context, containers, components, code) — see
+[`docs/arc42/`](docs/arc42/README.md).
+
 ## Project Structure
 
 ```
