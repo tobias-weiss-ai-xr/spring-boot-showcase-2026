@@ -9,7 +9,7 @@
 | 5 | **Entity-as-API-contract** — response shape is coupled to JPA mapping; a schema change ripples into the SPA. | Medium | Medium | ADR-005 trade-off; the frontend `models.ts` mirrors entities. Long-term fix is a proper DTO layer. |
 | 6 | **Shared dev DB + parallel tests** — E2E and manual use both mutate H2. | Medium | Low | E2E seeds unique data (unique emails/descriptions, single worker), asserts on its own rows only. |
 | 7 | **Machine-specific paths** in tooling (`JAVA_HOME=jdk-22`, absolute Maven path in `playwright.config.ts`). | High on this machine | Low | Documented in 02/07; `reuseExistingServer` tolerates already-running dev servers. Follow-up: derive Maven via PATH + `.mvn` wrapper. |
-| 8 | **Angular CLI vs Node version coupling** — latest CLI requires Node ≥ 22.22; this machine has 22.14 → pinned to Angular 20. | Medium | Low | Pinned in `package.json` (`@angular/cli@20`); upgrade together with Node. |
+| 8 | **Angular CLI vs Node version coupling** — the newest CLI line wants a newer Node than the local 22.14, so the project pins Angular 20. | Medium | Low | Pinned in `package.json` (`@angular/*` 20.x); upgrade Angular and Node together. |
 | 9 | **No production deployment / ops story** — health is only ever checked manually. | High (by scope) | Low | Accepted non-goal; Actuator + health indicator make it trivially containerizable later. |
 
 ## Risk register summary

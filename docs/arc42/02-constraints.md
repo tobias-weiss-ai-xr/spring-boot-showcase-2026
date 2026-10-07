@@ -34,5 +34,6 @@
 
 ## Compliance Constraints
 
-None beyond the course curriculum. The DWD drought-index dataset is **CC-BY 4.0** licensed and
-is bundled as a static asset; the license must be preserved if the dataset is redistributed.
+None beyond the course curriculum. The DWD-style drought-index grid bundled under
+`src/main/resources/dwd/` is a **demo asset** (ESRI ASCII grid format, 1 km cells); no
+software license is asserted for it — replace or license it properly before any redistribution.

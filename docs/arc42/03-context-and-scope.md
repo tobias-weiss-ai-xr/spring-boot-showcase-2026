@@ -23,7 +23,7 @@ C4Context
 
   System(cropguard, "CropGuard", "German agricultural hail insurance demo — quotes, policies, claims, assessments")
 
-  System_Ext(dwd, "DWD Open Data", "DWD drought index grid, July 1991–2020, 1 km resolution, CC-BY 4.0 (static snapshot)")
+  System_Ext(dwd, "DWD Open Data", "DWD-style drought index grid, July 1991–2020, 1 km resolution (bundled static snapshot)")
 
   Rel(farmer, cropguard, "quotes, buys policies, files claims", "HTTPS (REST)")
   Rel(assessor, cropguard, "reviews claim queue, approves/rejects", "HTTPS (REST)")

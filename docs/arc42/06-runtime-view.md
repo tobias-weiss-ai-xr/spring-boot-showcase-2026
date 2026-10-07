@@ -116,8 +116,10 @@ Business rules enforced in `calculate` / `validate`:
 6. Payout: `coverage × damagePercent/100 × (1 − deductible.percentage/100)`
    (`calculatePayout`, used by `ClaimService.assess`)
 
-`DwdRiskGridService` resolves a GK3 coordinate to the 1 km grid cell and returns index 0–10
-(adjustment 0.8–1.5). With null coordinates the drought adjustment is skipped (1.0).
+`DwdRiskGridService` resolves a GK3 coordinate to the 1 km grid cell and returns the stored
+index (0–10). The adjustment is `1.0 + (index − 2) × 0.05`, clamped to `[0.8, 1.5]` — so the
+realized range is 0.95 (index 1) to 1.4 (index 10); index 0 / out-of-grid / NODATA cells are
+neutral (1.0). With null coordinates the drought adjustment is skipped entirely.
 
 **Claim status machine (as implemented):** `Claim.Status` defines six states — `SUBMITTED`,
 `UNDER_REVIEW`, `ASSESSED`, `APPROVED`, `REJECTED`, `PAID`. The API currently uses only three

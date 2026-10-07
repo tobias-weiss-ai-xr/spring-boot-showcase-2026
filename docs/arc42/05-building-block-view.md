@@ -33,7 +33,7 @@ C4Container
 | CropGuard SPA | Angular 20 (standalone) | Login/registration, quote calculator, plot→policy→claim forms, assessor claim queue. JWT held in `localStorage`; `proxy.conf.json` forwards `/api` + `/actuator` to the backend. |
 | CropGuard REST API | Java 21, Spring Boot 3.3.5 | All business rules (premium calc, claim status machine, coverage validation), JWT auth, persistence, error mapping, actuator endpoints. |
 | H2 Database | H2 in-memory (`create-drop`) | Persistence of the insurance model. Re-seeded by `DataInitializer` on every boot. |
-| DWD drought grid | ASCII raster (`.asc.gz`) | 1991–2020 July drought index at 1 km; looked up by GK3 coordinate → adjustment factor 0.8–1.5. Static, so quotes are reproducible. |
+| DWD drought grid | ASCII raster (`.asc.gz`) | 1991–2020 July drought index at 1 km; looked up by GK3 coordinate → premium factor 0.95–1.4 (formula `1 + (index−2)×0.05`, clamped [0.8, 1.5]). Static, so quotes are reproducible. |
 
 ## C4 Level 3 — Component Diagram (backend whitebox)
 

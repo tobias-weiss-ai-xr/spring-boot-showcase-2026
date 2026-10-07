@@ -11,8 +11,8 @@ claims (Schaeden) which assessors (Gutachter) review, calculate payouts, and app
 
 - **Bundesland-based risk zones** — 16 German federal states with DWD-based hail
   risk factors (Bayern 1.5x, Hessen 1.0x baseline, Schleswig-Holstein 0.8x)
-- **DWD drought index** — 1km grid (July 1991–2020, CC-BY 4.0) loaded at startup,
-  location-specific drought adjustment via GK3 coordinates (0.8–1.5x)
+- **DWD drought index** — 1km grid (July 1991–2020, bundled demo asset) loaded at startup,
+  location-specific drought adjustment via GK3 coordinates (factor 0.95–1.4)
 - **Crop type catalog** — 14 crops from WHEAT (45 EUR/ha) to HOPS (350 EUR/ha)
 - **Premium calculation** — `base × hectares × bundesland.riskFactor × droughtAdjustment × deductible.premiumFactor`
 - **Claim workflow** — SUBMITTED → APPROVED/REJECTED via assessor review, with payout

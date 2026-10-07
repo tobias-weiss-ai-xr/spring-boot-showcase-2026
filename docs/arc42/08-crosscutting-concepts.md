@@ -6,7 +6,7 @@ Concepts that apply to the whole system.
 
 - **Stateless JWT**: `POST /api/auth/login` validates against the `insureds` table
   (`BCryptPasswordEncoder.matches`) and returns a signed HS512 JWT
-  (key derived from the 63-char dev secret; TTL 86400 s = 24 h).
+  (key derived from the 70-character dev secret; TTL 86400 s = 24 h).
 - **Filter chain**: `SecurityConfig` — CSRF off, `STATELESS`, permits `/api/auth/**`,
   `/api/insureds/**`, `/h2-console/**`, `/actuator/**`; `JwtAuthFilter` runs before
   `UsernamePasswordAuthenticationFilter` and populates the `SecurityContext` with
