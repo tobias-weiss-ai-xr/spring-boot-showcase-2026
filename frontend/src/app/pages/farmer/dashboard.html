@@ -6,6 +6,9 @@
 @if (error()) {
   <div class="alert error" role="alert">{{ error() }}</div>
 }
+@if (flash(); as f) {
+  <div class="alert success" role="status">{{ f }}</div>
+}
 
 <div class="grid">
   <section class="card">

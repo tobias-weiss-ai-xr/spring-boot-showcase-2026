@@ -148,6 +148,8 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
 - **ASSESSOR view** — full claim queue with status filter, assess/approve/reject form, hail events
 - **Risk map** — canvas heat map of the DWD drought index grid with plot markers and hover
   tooltip, shown on both dashboards (`GET /api/risk-map`)
+- **German UI throughout** — `de-DE` formatting for currency/dates (`1.125,00 €`, `dd.MM.yyyy`),
+  inline success/error feedback instead of browser dialogs, demo credentials shown on the login page
 - JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
   logs out and returns you to the login page. Server-side, farmers only ever see their own
   plots/policies/claims (tenant scoping), and public registration always creates a FARMER account.

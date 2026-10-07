@@ -3,6 +3,9 @@
 @if (loading()) {
   <p class="muted">Daten werden geladen …</p>
 }
+@if (flash(); as f) {
+  <div class="alert success" role="status">{{ f }}</div>
+}
 @if (error()) {
   <div class="alert error" role="alert">{{ error() }}</div>
 }

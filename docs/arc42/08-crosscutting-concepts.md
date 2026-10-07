@@ -80,8 +80,13 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 - **Session**: `AuthService` keeps a `signal<LoginResponse|null>`; persisted in `localStorage`.
 - **Auth interceptor**: attaches `Authorization: Bearer …`; on 401 logs out and redirects to `/login`.
 - **Route guards**: `farmerGuard` / `assessorGuard` build a URL tree (`/farmer`, `/assessor`, `/forbidden`).
-- **UI language**: German labels (target audience); plain CSS design system (`.card`, `.badge`,
-  `.alert`) — no UI framework dependency.
+- **UI language**: German labels (target audience); `LOCALE_ID = 'de'` — currency, number and
+  date pipes render de-DE (`1.125,00 €`, `dd.MM.yyyy`). Plain CSS design system (`.card`,
+  `.badge`, `.alert`) — no UI framework dependency.
+- **Feedback conventions**: errors inline as `.alert.error` (`role="alert"`); successes inline as
+  `.alert.success` (`role="status"`, auto-dismiss after 3 s) — no blocking `window.alert` dialogs.
+  Empty tables show a muted hint row; the risk-map canvas carries `role="img"` + German aria-label.
+- **Login page** shows the seeded demo accounts (FARMER / ASSESSOR) for quick demo access.
 
 ## 9. Testing *(module 7)*
 

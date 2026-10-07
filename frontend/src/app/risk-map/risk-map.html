@@ -1,5 +1,7 @@
 <div class="map-wrap">
-  <canvas #cv width="327" height="433" (mousemove)="onMove($event)" (mouseleave)="tip.set(null)"></canvas>
+  <canvas #cv width="327" height="433" role="img"
+  aria-label="Risikokarte: DWD-Trockenindex der Region mit Feldmarkierungen"
+  (mousemove)="onMove($event)" (mouseleave)="tip.set(null)"></canvas>
   @if (tip(); as t) {
     <div class="map-tip" [style.left.px]="t.x" [style.top.px]="t.y">{{ t.text }}</div>
   }

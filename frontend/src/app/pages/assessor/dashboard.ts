@@ -21,8 +21,10 @@ export class AssessorDashboard implements OnInit {
   readonly statusFilter = signal('ALL');
   readonly selected = signal<Claim | null>(null);
   readonly error = signal('');
+  readonly flash = signal('');
   readonly loading = signal(true);
   private pending = 0;
+  private flashTimer: ReturnType<typeof setTimeout> | undefined;
 
   assess: AssessRequest = { damagePercent: 0, decision: 'APPROVED', assessorNotes: '' };
 
@@ -84,9 +86,17 @@ export class AssessorDashboard implements OnInit {
     this.http.put<Claim>(`/api/claims/${claim.id}/assess`, this.assess).subscribe({
       next: () => {
         this.selected.set(null);
+        this.notify(`Schadenfall #${claim.id} bearbeitet (${this.assess.decision})`);
         this.refreshClaims();
       },
       error: e => this.error.set(httpErrorDetail(e))
     });
+  }
+
+  /** Inline success feedback (auto-dismisses); replaces blocking window.alert. */
+  private notify(msg: string): void {
+    this.flash.set(msg);
+    clearTimeout(this.flashTimer);
+    this.flashTimer = setTimeout(() => this.flash.set(''), 3000);
   }
 }

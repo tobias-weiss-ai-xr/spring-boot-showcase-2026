@@ -53,7 +53,7 @@ export class FarmerDashboard {
   readonly createPlotButton = this.page.getByRole('button', { name: 'Feld anlegen' });
 
   // Policy form
-  readonly plotSelect = this.page.getByLabel('Feld');
+  readonly plotSelect = this.page.getByLabel('Feld', { exact: true });
   readonly coverage = this.page.getByLabel('Deckung (€)');
   readonly coverageStart = this.page.getByLabel('Beginn');
   readonly coverageEnd = this.page.getByLabel('Ende');

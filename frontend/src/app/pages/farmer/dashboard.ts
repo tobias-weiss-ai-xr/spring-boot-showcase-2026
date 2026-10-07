@@ -23,8 +23,10 @@ export class FarmerDashboard implements OnInit {
   readonly claims = signal<Claim[]>([]);
   readonly quoteResult = signal<QuoteResult | null>(null);
   readonly error = signal('');
+  readonly flash = signal('');
   readonly loading = signal(true);
   private pending = 0;
+  private flashTimer: ReturnType<typeof setTimeout> | undefined;
 
   quote = { cropType: 'WHEAT', hectares: 25, bundesland: 'HESSEN', deductible: 'TEN_PERCENT', coverageEur: 25000, coordinateE: 3700000, coordinateN: 5570000 };
   plotForm = { cropType: 'WHEAT', hectares: 25, bundesland: 'HESSEN', coordinateE: 3700000, coordinateN: 5570000, locationDescription: 'Mein Feld' };
@@ -95,7 +97,7 @@ export class FarmerDashboard implements OnInit {
     this.http.post<Plot>('/api/plots', { ...this.plotForm, insuredId: this.insuredId() }).subscribe({
       next: () => {
         this.plotForm.locationDescription = '';
-        window.alert('Feld angelegt');
+        this.notify('Feld angelegt');
         this.refresh();
       },
       error: e => this.error.set(httpErrorDetail(e))
@@ -106,7 +108,7 @@ export class FarmerDashboard implements OnInit {
     this.error.set('');
     this.http.post<Policy>('/api/policies', { ...this.policyForm, status: 'ACTIVE' }).subscribe({
       next: () => {
-        window.alert('Police angelegt');
+        this.notify('Police angelegt');
         this.refresh();
       },
       error: e => this.error.set(httpErrorDetail(e))
@@ -118,10 +120,17 @@ export class FarmerDashboard implements OnInit {
     this.http.post<Claim>('/api/claims', this.claimForm).subscribe({
       next: () => {
         this.claimForm.damageDescription = '';
-        window.alert('Schaden gemeldet');
+        this.notify('Schaden gemeldet');
         this.refresh();
       },
       error: e => this.error.set(httpErrorDetail(e))
     });
+  }
+
+  /** Inline success feedback (auto-dismisses); replaces blocking window.alert. */
+  private notify(msg: string): void {
+    this.flash.set(msg);
+    clearTimeout(this.flashTimer);
+    this.flashTimer = setTimeout(() => this.flash.set(''), 3000);
   }
 }

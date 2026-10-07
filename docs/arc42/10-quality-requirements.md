@@ -46,9 +46,9 @@
 
 | Suite | Count | Command | What it proves |
 |-------|-------|---------|----------------|
-| Backend (JUnit + Mockito + slices) | 21 | `mvn test` | Context loads; premium validation; submit/assess; controller contracts + status codes; repository queries; DWD grid lookups |
+| Backend (JUnit + Mockito + slices) | 27 | `mvn test` | Context loads; premium validation; submit/assess; controller contracts + status codes; repository queries; DWD grid lookups; ownership/IDOR rejections; assess decision whitelist; forced-FARMER registration |
 | Frontend unit (Karma) | 2 | `npm test` | AuthService login request, role signal, logout |
-| Frontend E2E (Playwright) | 10 | `npm run test:e2e` | Login both roles, wrong creds, registration, role guards, live quote, full plot→policy→claim, assess workflow, hail events |
+| Frontend E2E (Playwright) | 12 | `npm run test:e2e` | Login both roles, wrong creds, registration, role guards, live quote, full plot→policy→claim, assess workflow, hail events, risk map rendering, farmer claim scoping |
 
 > All three suites run against the same code and were executed green before these documents
 > were written.

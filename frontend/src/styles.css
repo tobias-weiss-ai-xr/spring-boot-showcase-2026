@@ -99,6 +99,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   font-size: 0.9rem;
 }
 .alert.error { background: #fdecea; color: var(--error); border: 1px solid #f5c6c2; }
+.alert.success { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
 
 table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
