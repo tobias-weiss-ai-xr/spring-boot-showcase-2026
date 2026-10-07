@@ -47,7 +47,7 @@ mvn spring-boot:run
 cd frontend && npm start
 
 # tests
-mvn test                                             # 21 backend tests
+mvn test                                             # 23 backend tests
 cd frontend && npm test                              # 2 Karma unit tests
-cd frontend && npm run test:e2e                      # 10 Playwright end-to-end tests
+cd frontend && npm run test:e2e                      # 11 Playwright end-to-end tests
 ```

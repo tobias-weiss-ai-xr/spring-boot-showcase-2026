@@ -5,7 +5,7 @@
 | Quality aspect | Quality goal | Verification |
 |----------------|--------------|--------------|
 | Correctness | Claim workflow and premium math must be right | `ClaimServiceTest`, `PolicyServiceTest`, `PremiumCalculator` rules covered |
-| Testability | Real pyramid at three+ levels | 21 backend tests, 2 Karma, 10 Playwright |
+| Testability | Real pyramid at three+ levels | 23 backend tests, 2 Karma, 11 Playwright |
 | Demonstrability | Every course module pointable in code | Structure conventions; `docs/arc42` |
 | Performance | Fine for demo scale (in-memory, tiny data) | Not load-tested; risk noted (ADR-005 N+1) |
 | Simplicity | No heavy dependencies; boring, learnable code | Dependency count minimal (12 Maven deps), no UI framework |

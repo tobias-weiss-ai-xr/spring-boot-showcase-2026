@@ -124,7 +124,7 @@ curl http://localhost:8080/actuator/health
         └────────────┘
 ```
 
-Run with `mvn test`. 21 tests, all passing.
+Run with `mvn test`. 23 tests, all passing.
 
 ## Frontend (Angular)
 
@@ -146,10 +146,12 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
 - **FARMER view** — live premium quote (with DWD drought adjustment), register plot → buy policy →
   file a claim, and lists of own policies/claims
 - **ASSESSOR view** — full claim queue with status filter, assess/approve/reject form, hail events
+- **Risk map** — canvas heat map of the DWD drought index grid with plot markers and hover
+  tooltip, shown on both dashboards (`GET /api/risk-map`)
 - JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
   returns you to the login page
 
-Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 10 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, and the assessor claim workflow.
+Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 11 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, the assessor claim workflow, and the DWD risk map.
 
 ## Architecture Documentation
 

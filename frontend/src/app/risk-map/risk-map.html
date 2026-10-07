@@ -1,0 +1,13 @@
+<div class="map-wrap">
+  <canvas #cv width="327" height="433" (mousemove)="onMove($event)" (mouseleave)="tip.set(null)"></canvas>
+  @if (tip(); as t) {
+    <div class="map-tip" [style.left.px]="t.x" [style.top.px]="t.y">{{ t.text }}</div>
+  }
+</div>
+<div class="legend">
+  <span>Trockenindex</span>
+  @for (c of colors; track $index) {
+    <span class="chip" [style.background]="c"></span>
+  }
+  <span>0 = niedrig … 10 = hoch</span>
+</div>

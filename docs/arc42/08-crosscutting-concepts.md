@@ -51,7 +51,7 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 ## 5. REST / API conventions *(module 3)*
 
 - Resources: `/api/insureds`, `/api/auth`, `/api/plots`, `/api/policies`, `/api/claims`,
-  `/api/hail-events`.
+  `/api/hail-events`, `/api/risk-map` (downsampled DWD grid for the SPA heat map).
 - Status codes: 201 for creation, 200 for reads/updates, 400/404/401/403 for errors.
 - Query filters (`insuredId`, `severity`, date range, …) as query params; all-list variants
   used by the assessor view.

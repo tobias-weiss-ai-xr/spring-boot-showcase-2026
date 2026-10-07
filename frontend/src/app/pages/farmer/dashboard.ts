@@ -5,11 +5,12 @@ import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 import { AuthService } from '../../core/auth.service';
 import { httpErrorDetail } from '../../core/errors';
+import { RiskMap } from '../../risk-map/risk-map';
 import { Plot, Policy, Claim, QuoteResult, CROP_TYPES, BUNDESLAENDER, DEDUCTIBLES } from '../../models';
 
 @Component({
   selector: 'app-farmer-dashboard',
-  imports: [FormsModule, CurrencyPipe, DatePipe, DecimalPipe],
+  imports: [FormsModule, CurrencyPipe, DatePipe, DecimalPipe, RiskMap],
   templateUrl: './dashboard.html'
 })
 export class FarmerDashboard implements OnInit {
@@ -22,6 +23,8 @@ export class FarmerDashboard implements OnInit {
   readonly claims = signal<Claim[]>([]);
   readonly quoteResult = signal<QuoteResult | null>(null);
   readonly error = signal('');
+  readonly loading = signal(true);
+  private pending = 0;
 
   quote = { cropType: 'WHEAT', hectares: 25, bundesland: 'HESSEN', deductible: 'TEN_PERCENT', coverageEur: 25000, coordinateE: 3700000, coordinateN: 5570000 };
   plotForm = { cropType: 'WHEAT', hectares: 25, bundesland: 'HESSEN', coordinateE: 3700000, coordinateN: 5570000, locationDescription: 'Mein Feld' };
@@ -38,24 +41,44 @@ export class FarmerDashboard implements OnInit {
 
   refresh(): void {
     const id = this.insuredId()!;
+    this.pending = 3;
+    this.loading.set(true);
     this.http.get<Plot[]>(`/api/plots?insuredId=${id}`).subscribe({
       next: p => {
         this.plots.set(p);
         if (!this.policyForm.plotId && p.length) this.policyForm.plotId = p[0].id;
+        this.settle();
       },
-      error: e => this.error.set(httpErrorDetail(e))
+      error: e => {
+        this.error.set(httpErrorDetail(e));
+        this.settle();
+      }
     });
     this.http.get<Policy[]>(`/api/policies?insuredId=${id}`).subscribe({
       next: p => {
         this.policies.set(p);
         if (!this.claimForm.policyId && p.length) this.claimForm.policyId = p[0].id;
+        this.settle();
       },
-      error: e => this.error.set(httpErrorDetail(e))
+      error: e => {
+        this.error.set(httpErrorDetail(e));
+        this.settle();
+      }
     });
     this.http.get<Claim[]>(`/api/claims?insuredId=${id}`).subscribe({
-      next: c => this.claims.set(c),
-      error: e => this.error.set(httpErrorDetail(e))
+      next: c => {
+        this.claims.set(c);
+        this.settle();
+      },
+      error: e => {
+        this.error.set(httpErrorDetail(e));
+        this.settle();
+      }
     });
+  }
+
+  private settle(): void {
+    if (--this.pending === 0) this.loading.set(false);
   }
 
   quoteNow(): void {

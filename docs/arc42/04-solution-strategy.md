@@ -32,7 +32,7 @@ demonstrability first, correctness second, and simplicity throughout.
    works immediately. Cost: data is lost on restart — acceptable and *documented*.
 
 6. **A real test pyramid + browser E2E**
-   21 backend tests (unit/slice/integration), 2 Karma component tests, 10 Playwright
+   23 backend tests (unit/slice/integration), 2 Karma component tests, 11 Playwright
    end-to-end scenarios that prove real user journeys (login, quoting, plot→policy→claim,
    assess workflow, role guards). E2E tests seed their own unique data through the REST API
    to stay deterministic against the shared dev database.

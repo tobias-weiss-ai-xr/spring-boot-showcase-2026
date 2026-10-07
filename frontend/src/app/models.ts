@@ -88,6 +88,19 @@ export interface HailEvent {
   hailstoneDiameterMm: number | null;
 }
 
+/** Downsampled DWD drought grid served by GET /api/risk-map (NODATA cells keep their raw value). */
+export interface RiskMapData {
+  xllcorner: number;
+  yllcorner: number;
+  ymax: number;
+  cellsize: number;
+  step: number;
+  ncols: number;
+  nrows: number;
+  nodata: number;
+  values: number[][];
+}
+
 /** Option lists matching the backend enums (drives the forms). */
 export const CROP_TYPES = [
   'WHEAT', 'BARLEY', 'CORN', 'RAPESEED', 'VINES', 'APPLES', 'PEARS', 'CHERRIES',

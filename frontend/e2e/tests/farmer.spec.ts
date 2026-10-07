@@ -40,4 +40,23 @@ test.describe('Farmer dashboard', () => {
     await expect(farmer.claimRows.first()).toContainText('Vollständiger Ernteverlust durch Hagel');
     await expect(farmer.claimRows.first()).toContainText('SUBMITTED');
   });
+
+  test('renders the DWD risk map with drawn grid cells', async ({ page, newFarmer }) => {
+    await loginAsFarmer(page, newFarmer.email);
+
+    const canvas = page.locator('canvas');
+    await expect(canvas).toBeVisible();
+
+    // the grid must actually be painted (opaque pixels from the color scale)
+    const opaquePixels = await canvas.evaluate((cv: HTMLCanvasElement) => {
+      const ctx = cv.getContext('2d');
+      if (!ctx) return 0;
+      const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
+      let n = 0;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n++;
+      return n;
+    });
+    expect(opaquePixels).toBeGreaterThan(10000);
+    await expect(page.locator('.legend')).toContainText('Trockenindex');
+  });
 });

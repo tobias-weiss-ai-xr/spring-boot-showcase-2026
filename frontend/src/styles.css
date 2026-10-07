@@ -125,3 +125,6 @@ th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-
 .kv dd { margin: 0; font-weight: 600; }
 
 .inline-select { width: auto; margin-left: 0.75rem; }
+
+tbody tr:hover { background: #f3f7f3; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }

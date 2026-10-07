@@ -1,5 +1,8 @@
 <h2>Mein Betrieb (Landwirt:in)</h2>
 
+@if (loading()) {
+  <p class="muted">Daten werden geladen …</p>
+}
 @if (error()) {
   <div class="alert error" role="alert">{{ error() }}</div>
 }
@@ -195,4 +198,10 @@
       </tbody>
     </table>
   }
+</section>
+
+<section class="card">
+  <h3>Risikokarte <span class="muted">DWD-Trockenindex</span></h3>
+  <app-risk-map [plots]="plots()" />
+  <p class="hint">Weiße Punkte = deine Felder. Je röter das Gebiet, desto höher der Trockenindex — und dein Prämien-Aufschlag.</p>
 </section>

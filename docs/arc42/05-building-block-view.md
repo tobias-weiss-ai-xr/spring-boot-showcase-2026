@@ -67,7 +67,7 @@ C4Component
 
 | Component | Key classes | Responsibility |
 |-----------|-------------|----------------|
-| Controllers | `InsuredController`, `AuthController`, `PlotController`, `PolicyController`, `ClaimController`, `HailEventController` | REST surface; Bean Validation (`@Valid`); role enforcement (`@PreAuthorize("hasRole('ASSESSOR')")` on assess). |
+| Controllers | `InsuredController`, `AuthController`, `PlotController`, `PolicyController`, `ClaimController`, `HailEventController`, `RiskMapController` | REST surface; Bean Validation (`@Valid`); role enforcement (`@PreAuthorize("hasRole('ASSESSOR')")` on assess). `RiskMapController` serves the downsampled DWD grid for the frontend heat map. |
 | Security | `JwtService`, `JwtAuthFilter`, `SecurityConfig`, `AppProperties` | Issue/validate HS512 JWTs; extract Bearer token into `SecurityContext`; stateless filter chain; BCrypt encoder; permit `/api/auth/**` + `/api/insureds/**`. |
 | Services | `InsuredService`, `AuthService`, `PlotService`, `PolicyService`, `ClaimService`, `HailEventService` | Business workflow: coverage checks, status machine, hail-event linking, payout orchestration. |
 | PremiumCalculator | `PremiumCalculator` (record `PremiumResult`) | Core formula + business rules (min premium €50, max coverage €500k, coverage ≥ 10× premium). |
@@ -89,6 +89,7 @@ C4Component
     Component(login, "Login / Register", "pages", "credential forms")
     Component(farmer, "FarmerDashboard", "page", "quote calc, plot→policy→claim, own lists")
     Component(assessor, "AssessorDashboard", "page", "claim queue, assess form, hail events")
+    Component(riskmap, "RiskMap", "canvas component", "DWD drought-grid heat map + plot markers")
     Component(ms, "models.ts", "TS interfaces", "DTO mirrors")
   }
 

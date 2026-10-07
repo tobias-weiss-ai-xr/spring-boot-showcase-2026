@@ -80,6 +80,30 @@ public class DwdRiskGridService {
         return coordinateE >= xMin && coordinateE < xMax && coordinateN >= yMin && coordinateN < yMax;
     }
 
+    /**
+     * Downsampled grid for the frontend risk map: every {@code step}-th cell, same extent.
+     * NODATA cells keep their value so the client can render them as background.
+     */
+    public RiskMapData sampled(int step) {
+        if (step < 1) {
+            step = 1;
+        }
+        int cols = (ncols + step - 1) / step;
+        int rows = (nrows + step - 1) / step;
+        int[][] values = new int[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                values[row][col] = grid[row * step][col * step];
+            }
+        }
+        return new RiskMapData((int) xllcorner, (int) yllcorner, (int) yMax,
+            cellsize, step, cols, rows, (int) nodata, values);
+    }
+
+    public record RiskMapData(int xllcorner, int yllcorner, int ymax, double cellsize,
+                              int step, int ncols, int nrows, int nodata, int[][] values) {
+    }
+
     private double parseHeader(String line) throws IOException {
         String[] parts = line.trim().split("\\s+");
         if (parts.length != 2) {
