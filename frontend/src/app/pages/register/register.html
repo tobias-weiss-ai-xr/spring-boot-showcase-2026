@@ -3,7 +3,7 @@
   <p class="muted">Als FARMER ein neues Konto anlegen</p>
 
   @if (error()) {
-    <div class="alert error">{{ error() }}</div>
+    <div class="alert error" role="alert">{{ error() }}</div>
   }
 
   <form (ngSubmit)="submit()">

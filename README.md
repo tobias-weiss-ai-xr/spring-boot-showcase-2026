@@ -148,7 +148,7 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
 - JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
   returns you to the login page
 
-Run the frontend tests with `npm test` (Karma/ChromeHeadless).
+Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 10 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, and the assessor claim workflow.
 
 ## Project Structure
 

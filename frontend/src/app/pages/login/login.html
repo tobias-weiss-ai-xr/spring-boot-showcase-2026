@@ -3,7 +3,7 @@
   <p class="muted">Anmeldung · German agricultural hail insurance demo</p>
 
   @if (error()) {
-    <div class="alert error">{{ error() }}</div>
+    <div class="alert error" role="alert">{{ error() }}</div>
   }
 
   <form (ngSubmit)="submit()">

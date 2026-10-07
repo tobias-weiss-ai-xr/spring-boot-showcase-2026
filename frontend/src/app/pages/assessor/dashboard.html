@@ -1,7 +1,7 @@
 <h2>Gutachter-Portal</h2>
 
 @if (error()) {
-  <div class="alert error">{{ error() }}</div>
+  <div class="alert error" role="alert">{{ error() }}</div>
 }
 
 <div class="grid">
@@ -15,7 +15,7 @@
       <p class="muted">Keine Schadensfälle in dieser Ansicht.</p>
     } @else {
       <table>
-        <thead><tr><th>#</th><th>Datum</th><th>Feld / Kultur</th><th>Beschreibung</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>#</th><th>Datum</th><th>Feld / Kultur</th><th>Beschreibung</th><th>Schaden %</th><th>Auszahlung</th><th>Status</th><th></th></tr></thead>
         <tbody>
           @for (c of filtered(); track c.id) {
             <tr>
@@ -23,6 +23,8 @@
               <td>{{ c.damageDate | date:'dd.MM.yyyy' }}</td>
               <td>{{ c.policy.plot.locationDescription }} · {{ c.policy.plot.cropType }}</td>
               <td>{{ c.damageDescription }}</td>
+              <td>{{ c.damagePercent ?? '–' }}</td>
+              <td>{{ c.payoutEur ? (c.payoutEur | currency:'EUR') : '–' }}</td>
               <td><span class="badge" [class]="c.status.toLowerCase()">{{ c.status }}</span></td>
               <td>
                 @if (selected()?.id === c.id) {
