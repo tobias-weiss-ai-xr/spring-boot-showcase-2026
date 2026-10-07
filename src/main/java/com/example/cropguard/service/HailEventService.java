@@ -46,6 +46,10 @@ public class HailEventService {
         return hailEventRepository.findBySeverity(severity);
     }
 
+    public List<HailEvent> findAll() {
+        return hailEventRepository.findAll();
+    }
+
     public List<Claim> findClaimsForEvent(Long hailEventId) {
         return claimRepository.findByHailEventId(hailEventId);
     }

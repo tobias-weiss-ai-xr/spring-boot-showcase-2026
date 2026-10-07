@@ -125,6 +125,31 @@ curl http://localhost:8080/actuator/health
 
 Run with `mvn test`. 21 tests, all passing.
 
+## Frontend (Angular)
+
+A standalone Angular SPA in [`frontend/`](frontend/) talks to the backend through a dev proxy
+(no CORS setup needed). Requires Node ≥ 22.
+
+```bash
+# Terminal 1 — backend
+mvn spring-boot:run        # :8080
+
+# Terminal 2 — frontend
+cd frontend
+npm install
+npm start                  # :4200 → proxies /api and /actuator to :8080
+```
+
+Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
+
+- **FARMER view** — live premium quote (with DWD drought adjustment), register plot → buy policy →
+  file a claim, and lists of own policies/claims
+- **ASSESSOR view** — full claim queue with status filter, assess/approve/reject form, hail events
+- JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
+  returns you to the login page
+
+Run the frontend tests with `npm test` (Karma/ChromeHeadless).
+
 ## Project Structure
 
 ```

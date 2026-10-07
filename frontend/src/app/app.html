@@ -1,0 +1,12 @@
+<nav class="topbar">
+  <span class="brand">🌾 CropGuard</span>
+  @if (auth.user(); as u) {
+    <span class="user">
+      {{ u.name }} · {{ u.role }}
+      <a class="logout" href="#" (click)="$event.preventDefault(); logout()">Abmelden</a>
+    </span>
+  }
+</nav>
+<main>
+  <router-outlet />
+</main>

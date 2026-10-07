@@ -1,0 +1,90 @@
+<h2>Gutachter-Portal</h2>
+
+@if (error()) {
+  <div class="alert error">{{ error() }}</div>
+}
+
+<div class="grid">
+  <section class="card table-card">
+    <h3>Schadensfälle
+      <select class="inline-select" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)" name="filter">
+        @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+    </h3>
+    @if (filtered().length === 0) {
+      <p class="muted">Keine Schadensfälle in dieser Ansicht.</p>
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Datum</th><th>Feld / Kultur</th><th>Beschreibung</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          @for (c of filtered(); track c.id) {
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{{ c.damageDate | date:'dd.MM.yyyy' }}</td>
+              <td>{{ c.policy.plot.locationDescription }} · {{ c.policy.plot.cropType }}</td>
+              <td>{{ c.damageDescription }}</td>
+              <td><span class="badge" [class]="c.status.toLowerCase()">{{ c.status }}</span></td>
+              <td>
+                @if (selected()?.id === c.id) {
+                  <button class="btn-sm" (click)="selected.set(null)">Abbrechen</button>
+                } @else {
+                  <button class="btn-sm" (click)="open(c)">Bearbeiten</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (selected(); as claim) {
+    <section class="card">
+      <h3>Schaden #{{ claim.id }} begutachten</h3>
+      <dl class="kv">
+        <dt>Kultur / Feld</dt><dd>{{ claim.policy.plot.cropType }} · {{ claim.policy.plot.locationDescription }}</dd>
+        <dt>Versichert gegen</dt><dd>{{ claim.policy.coverageEur | currency:'EUR' }} Deckung, {{ claim.policy.deductible }} Selbstbehalt</dd>
+      </dl>
+      <form (ngSubmit)="submitAssess()">
+        <div class="row">
+          <label>Schaden (%)
+            <input type="number" min="0" max="100" [(ngModel)]="assess.damagePercent" name="damagePercent" required>
+          </label>
+          <label>Entscheidung
+            <select [(ngModel)]="assess.decision" name="decision">
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </label>
+        </div>
+        <label>Anmerkungen
+          <textarea [(ngModel)]="assess.assessorNotes" name="notes" rows="2"></textarea>
+        </label>
+        <button type="submit">Entscheidung speichern</button>
+      </form>
+    </section>
+  }
+</div>
+
+<section class="card table-card">
+  <h3>Hagelereignisse</h3>
+  @if (events().length === 0) {
+    <p class="muted">Keine Hagelereignisse erfasst.</p>
+  } @else {
+    <table>
+      <thead><tr><th>#</th><th>Datum</th><th>Bundesländer</th><th>Schwere</th><th>Korndurchmesser</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        @for (e of events(); track e.id) {
+          <tr>
+            <td>{{ e.id }}</td>
+            <td>{{ e.eventDate | date:'dd.MM.yyyy' }}</td>
+            <td>{{ e.affectedBundeslaender }}</td>
+            <td><span class="badge" [class]="e.severity.toLowerCase()">{{ e.severity }}</span></td>
+            <td>{{ e.hailstoneDiameterMm ?? '–' }}</td>
+            <td>{{ e.description }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

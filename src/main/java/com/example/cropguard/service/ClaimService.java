@@ -80,6 +80,10 @@ public class ClaimService {
         return claimRepository.findByPolicyPlotInsuredId(insuredId);
     }
 
+    public List<Claim> findAll() {
+        return claimRepository.findAll();
+    }
+
     public List<Claim> findByHailEventId(Long hailEventId) {
         return claimRepository.findByHailEventId(hailEventId);
     }

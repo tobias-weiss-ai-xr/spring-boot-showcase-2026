@@ -1,0 +1,34 @@
+<div class="auth-card">
+  <h1>Registrieren</h1>
+  <p class="muted">Als FARMER ein neues Konto anlegen</p>
+
+  @if (error()) {
+    <div class="alert error">{{ error() }}</div>
+  }
+
+  <form (ngSubmit)="submit()">
+    <label>
+      Name
+      <input type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" name="name" required minlength="2">
+    </label>
+    <label>
+      E-Mail
+      <input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" required>
+    </label>
+    <label>
+      Passwort
+      <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" required minlength="6">
+    </label>
+    <label>
+      Bundesland
+      <select [ngModel]="bundesland()" (ngModelChange)="bundesland.set($event)" name="bundesland">
+        @for (bl of bundeslaender; track bl) {
+          <option [value]="bl">{{ bl }}</option>
+        }
+      </select>
+    </label>
+    <button type="submit" [disabled]="busy()">{{ busy() ? 'Registriere…' : 'Registrieren' }}</button>
+  </form>
+
+  <div class="hint"><a routerLink="/login">Zurück zur Anmeldung</a></div>
+</div>

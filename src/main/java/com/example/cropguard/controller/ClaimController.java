@@ -27,8 +27,10 @@ public class ClaimController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Claim>> list(@RequestParam Long insuredId) {
-        return ResponseEntity.ok(claimService.findByInsuredId(insuredId));
+    public ResponseEntity<List<Claim>> list(@RequestParam(required = false) Long insuredId) {
+        return ResponseEntity.ok(insuredId != null
+            ? claimService.findByInsuredId(insuredId)
+            : claimService.findAll());
     }
 
     @GetMapping("/{id}")

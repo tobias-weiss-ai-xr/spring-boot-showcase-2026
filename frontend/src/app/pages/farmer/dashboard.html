@@ -1,0 +1,198 @@
+<h2>Mein Betrieb (Landwirt:in)</h2>
+
+@if (error()) {
+  <div class="alert error">{{ error() }}</div>
+}
+
+<div class="grid">
+  <section class="card">
+    <h3>Prämien-Quote</h3>
+    <form (ngSubmit)="quoteNow()">
+      <div class="row">
+        <label>Kultur
+          <select [(ngModel)]="quote.cropType" name="cropType" (ngModelChange)="quoteNow()">
+            @for (c of cropTypes; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label>Bundesland
+          <select [(ngModel)]="quote.bundesland" name="bundesland" (ngModelChange)="quoteNow()">
+            @for (bl of bundeslaender; track bl) { <option [value]="bl">{{ bl }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Hektar
+          <input type="number" min="1" step="0.5" [(ngModel)]="quote.hectares" name="hectares" (ngModelChange)="quoteNow()">
+        </label>
+        <label>Selbstbehalt
+          <select [(ngModel)]="quote.deductible" name="deductible" (ngModelChange)="quoteNow()">
+            @for (d of deductibles; track d) { <option [value]="d">{{ d }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Deckung (€)
+          <input type="number" min="1000" step="1000" [(ngModel)]="quote.coverageEur" name="coverageEur" (ngModelChange)="quoteNow()">
+        </label>
+        <label>GK3 E
+          <input type="number" [(ngModel)]="quote.coordinateE" name="coordinateE" (ngModelChange)="quoteNow()">
+        </label>
+        <label>GK3 N
+          <input type="number" [(ngModel)]="quote.coordinateN" name="coordinateN" (ngModelChange)="quoteNow()">
+        </label>
+      </div>
+      <button type="submit">Quote berechnen</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h3>Quote-Ergebnis</h3>
+    @if (quoteResult(); as r) {
+      <dl class="kv">
+        <dt>Prämie (Jahr)</dt><dd>{{ r.premiumEur | currency:'EUR' }}</dd>
+        <dt>Basisprämie</dt><dd>{{ r.baseEur | currency:'EUR' }}</dd>
+        <dt>Hagelrisiko (Bundesland)</dt><dd>× {{ r.riskAdjustment | number:'1.2-2' }}</dd>
+        <dt>Selbstbehalt</dt><dd>× {{ r.deductibleAdjustment | number:'1.2-2' }}</dd>
+        <dt>Dürreindex (DWD)</dt><dd>{{ r.droughtIndex }} (× {{ r.droughtAdjustment | number:'1.2-2' }})</dd>
+      </dl>
+      <p class="muted">Versichern Sie dann Ihre Fläche und schließen Sie eine Police ab.</p>
+    } @else {
+      <p class="muted">Formular ausfüllen — die Quote wird live berechnet.</p>
+    }
+  </section>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h3>Feld anlegen</h3>
+    <form (ngSubmit)="createPlot()">
+      <div class="row">
+        <label>Kultur
+          <select [(ngModel)]="plotForm.cropType" name="pCropType">
+            @for (c of cropTypes; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label>Hektar
+          <input type="number" min="1" step="0.5" [(ngModel)]="plotForm.hectares" name="pHectares">
+        </label>
+        <label>Bundesland
+          <select [(ngModel)]="plotForm.bundesland" name="pBundesland">
+            @for (bl of bundeslaender; track bl) { <option [value]="bl">{{ bl }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>GK3 E
+          <input type="number" [(ngModel)]="plotForm.coordinateE" name="pE">
+        </label>
+        <label>GK3 N
+          <input type="number" [(ngModel)]="plotForm.coordinateN" name="pN">
+        </label>
+        <label>Beschreibung
+          <input type="text" [(ngModel)]="plotForm.locationDescription" name="pDesc" required>
+        </label>
+      </div>
+      <button type="submit">Feld anlegen</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h3>Police abschließen</h3>
+    <form (ngSubmit)="createPolicy()">
+      <label>Feld
+        <select [(ngModel)]="policyForm.plotId" name="plotId" required>
+          @for (p of plots(); track p.id) {
+            <option [value]="p.id">#{{ p.id }} · {{ p.cropType }} · {{ p.hectares }} ha</option>
+          }
+        </select>
+      </label>
+      <div class="row">
+        <label>Deckung (€)
+          <input type="number" min="1000" step="1000" [(ngModel)]="policyForm.coverageEur" name="coverageEur">
+        </label>
+        <label>Selbstbehalt
+          <select [(ngModel)]="policyForm.deductible" name="deductible">
+            @for (d of deductibles; track d) { <option [value]="d">{{ d }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Beginn
+          <input type="date" [(ngModel)]="policyForm.coverageStart" name="start" required>
+        </label>
+        <label>Ende
+          <input type="date" [(ngModel)]="policyForm.coverageEnd" name="end" required>
+        </label>
+      </div>
+      <button type="submit" [disabled]="!plots().length">Police abschließen</button>
+    </form>
+  </section>
+</div>
+
+<div class="grid">
+  <section class="card table-card">
+    <h3>Meine Policen</h3>
+    @if (policies().length === 0) {
+      <p class="muted">Noch keine Police.</p>
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Status</th><th>Laufzeit</th></tr></thead>
+        <tbody>
+          @for (p of policies(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.plot.cropType }} · {{ p.plot.locationDescription }}</td>
+              <td>{{ p.coverageEur | currency:'EUR' }}</td>
+              <td>{{ p.premiumEur | currency:'EUR' }}</td>
+              <td><span class="badge">{{ p.status }}</span></td>
+              <td>{{ p.coverageStart | date:'dd.MM.yyyy' }} – {{ p.coverageEnd | date:'dd.MM.yyyy' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="card">
+    <h3>Schaden melden</h3>
+    <form (ngSubmit)="fileClaim()">
+      <label>Police
+        <select [(ngModel)]="claimForm.policyId" name="policyId" required>
+          @for (p of policies(); track p.id) {
+            <option [value]="p.id">#{{ p.id }} · {{ p.plot.cropType }}</option>
+          }
+        </select>
+      </label>
+      <label>Schadensdatum
+        <input type="date" [(ngModel)]="claimForm.damageDate" name="damageDate" required>
+      </label>
+      <label>Beschreibung
+        <textarea [(ngModel)]="claimForm.damageDescription" name="damageDescription" rows="3" required minlength="10"></textarea>
+      </label>
+      <button type="submit" [disabled]="!policies().length">Schaden melden</button>
+    </form>
+  </section>
+</div>
+
+<section class="card table-card">
+  <h3>Meine Schäden</h3>
+  @if (claims().length === 0) {
+    <p class="muted">Noch keine Schadensmeldungen.</p>
+  } @else {
+    <table>
+      <thead><tr><th>#</th><th>Datum</th><th>Beschreibung</th><th>Schaden %</th><th>Auszahlung</th><th>Status</th></tr></thead>
+      <tbody>
+        @for (c of claims(); track c.id) {
+          <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.damageDate | date:'dd.MM.yyyy' }}</td>
+            <td>{{ c.damageDescription }}</td>
+            <td>{{ c.damagePercent ?? '–' }}</td>
+            <td>{{ c.payoutEur ? (c.payoutEur | currency:'EUR') : '–' }}</td>
+            <td><span class="badge" [class]="c.status.toLowerCase()">{{ c.status }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

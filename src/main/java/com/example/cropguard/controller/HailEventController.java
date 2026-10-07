@@ -35,7 +35,7 @@ public class HailEventController {
             return ResponseEntity.ok(hailEventService.findByDateRange(start, end));
         if (severity != null)
             return ResponseEntity.ok(hailEventService.findBySeverity(severity));
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(hailEventService.findAll());
     }
 
     @GetMapping("/{id}")
