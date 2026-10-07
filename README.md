@@ -1,5 +1,7 @@
 # CropGuard — Crop Insurance Management System
 
+![CI](https://github.com/tobias-weiss-ai-xr/spring-boot-showcase-2026/actions/workflows/ci.yml/badge.svg)
+
 Domain-specific Spring Boot demo: agricultural hail insurance for the German market.
 Every module of the [Spring Boot course](https://courses.graphwiz.ai/springboot) at
 CertPrep maps 1:1 to a layer of this codebase.
@@ -22,11 +24,18 @@ claims (Schaeden) which assessors (Gutachter) review, calculate payouts, and app
 ## Quick Start
 
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run            # backend on :8080
+```
+
+Or with Docker (backend + nginx-served SPA):
+
+```bash
+docker compose up --build      # frontend on :80, API on :8080
 ```
 
 App starts at http://localhost:8080. H2 console at `/h2-console` (JDBC URL:
-`jdbc:h2:mem:cropguard`, user: `sa`, empty password).
+`jdbc:h2:mem:cropguard`, user: `sa`, empty password). Live API docs:
+**http://localhost:8080/swagger-ui** (springdoc-openapi).
 
 Seeded users (created by `DataInitializer`):
 

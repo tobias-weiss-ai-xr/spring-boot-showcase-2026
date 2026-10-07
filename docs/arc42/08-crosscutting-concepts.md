@@ -8,9 +8,11 @@ Concepts that apply to the whole system.
   (`BCryptPasswordEncoder.matches`) and returns a signed HS512 JWT
   (key derived from the 70-character dev secret; TTL 86400 s = 24 h).
 - **Filter chain**: `SecurityConfig` — CSRF off, `STATELESS`, permits `/api/auth/**`,
-  `/api/insureds/**`, `/h2-console/**`, `/actuator/**`; `JwtAuthFilter` runs before
+  `/api/insureds/**`, `/v3/api-docs/**`, `/swagger-ui/**`, `/swagger-ui.html`, `/h2-console/**`,
+  `/actuator/**`; `JwtAuthFilter` runs before
   `UsernamePasswordAuthenticationFilter` and populates the `SecurityContext` with
-  `ROLE_<role>`.
+  `ROLE_<role>`. The OpenAPI docs are deliberately public in the demo — they disclose the API
+  surface only, no data; harden for production (see 11).
 - **Authorization**: method security (`@EnableMethodSecurity`) + `@PreAuthorize` on the assess
   (ASSESSOR) and plot-creation (FARMER) endpoints. Route guards on the frontend mirror this.
 - **Ownership / tenant scoping**: farmers only ever see and mutate their own plots, policies and
@@ -60,6 +62,8 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 
 - Resources: `/api/insureds`, `/api/auth`, `/api/plots`, `/api/policies`, `/api/claims`,
   `/api/hail-events`, `/api/risk-map` (downsampled DWD grid for the SPA heat map).
+- Live API reference: springdoc-openapi serves **`/swagger-ui`** and `/v3/api-docs`
+  (`OpenApiConfig` provides title/description).
 - Status codes: 201 for creation, 200 for reads/updates, 400/404/401/403 for errors.
 - Query filters (`insuredId`, `severity`, date range, …) as query params; all-list variants
   used by the assessor view.

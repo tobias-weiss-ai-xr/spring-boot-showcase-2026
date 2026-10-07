@@ -2,8 +2,10 @@
 
 ## Infrastructure: development / demo deployment
 
-There is exactly one deployment scenario: the developer machine. No CI, no server, no
-container — the "production" of this project is `mvn spring-boot:run` + `npm start`.
+The primary scenario is the developer machine: `mvn spring-boot:run` + `npm start`.
+A container scenario (Docker Compose: backend JAR + nginx-served SPA) and a CI pipeline
+(GitHub Actions: backend tests, frontend build/Karma, Playwright E2E on every push) exist
+alongside it — see below.
 
 ```mermaid
 flowchart LR
@@ -43,6 +45,29 @@ flowchart LR
 backend *and* the DWD grid — it runs stand-alone with the frontend pointed at it. The Angular
 SPA itself is not packaged into the JAR (it is consumed via the dev server during demos);
 integrating the built SPA output into the JAR is a documented follow-up, not a current feature.
+
+## Container deployment (Docker Compose)
+
+`docker compose up --build` starts two containers:
+
+| Container | Image | Content |
+|-----------|-------|---------|
+| `backend` | multi-stage `Dockerfile` (Maven + Temurin 21 → Temurin 21 JRE) | Spring Boot fat JAR on `:8080`, H2 in-memory |
+| `frontend` | multi-stage `frontend/Dockerfile` (Node 22 build → `nginx:alpine`) | built SPA on `:80`; `nginx.conf` serves it and proxies `/api`, `/actuator`, `/v3/api-docs`, `/swagger-ui` to `backend:8080` |
+
+Same trade-off as the dev setup: H2 is in-memory, so **data resets when the backend container
+restarts** (`DataInitializer` reseeds). The compose stack is a demo deployment, not a
+production target.
+
+## CI (GitHub Actions)
+
+`.github/workflows/ci.yml` runs on every push/PR, three jobs on `ubuntu-latest`:
+
+1. **backend** — `mvn -B test` (Temurin 21, Maven cache)
+2. **frontend** — `npm ci`, `ng build`, Karma with `ChromeHeadless`
+3. **e2e** — `npx playwright install --with-deps chromium`, full Playwright suite
+   (auto-starts both servers via the `webServer` config; Maven resolved cross-platform via
+   `MVN_CMD`/platform default). Failures upload the HTML report as an artifact.
 
 ## Environment / Profiles
 

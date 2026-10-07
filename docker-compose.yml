@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    # H2 in-memory: data resets when the container restarts (demo, see arc42 07)
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
