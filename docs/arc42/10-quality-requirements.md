@@ -8,7 +8,7 @@
 | Testability | Real pyramid at three+ levels | 21 backend tests, 2 Karma, 10 Playwright |
 | Demonstrability | Every course module pointable in code | Structure conventions; `docs/arc42` |
 | Performance | Fine for demo scale (in-memory, tiny data) | Not load-tested; risk noted (ADR-005 N+1) |
-| Simplicity | No heavy dependencies; boring, learnable code | Dependency count minimal (16 deps), no UI framework |
+| Simplicity | No heavy dependencies; boring, learnable code | Dependency count minimal (12 Maven deps), no UI framework |
 
 ## Quality scenarios
 
@@ -39,7 +39,7 @@
 
 ### Q5 — Application health is observable (operations)
 - **Scenario**: `GET /actuator/health`.
-- **Expectation**: `UP` with a `database` component reporting seeded table counts.
+- **Expectation**: `UP` with a `database` component reporting the seeded `insureds` row count.
   *Covered by* `DatabaseHealthIndicator` + `CropGuardApplicationTest` context.
 
 ## Test inventory (current, all green)

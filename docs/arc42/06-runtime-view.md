@@ -49,7 +49,7 @@ sequenceDiagram
   API-->>SPA: 201 Plot
   F->>SPA: buy policy for plot
   SPA->>API: POST /api/policies (coverage, deductible, dates)
-  API->>API: PolicyService.validate (coverage rules, premium)
+  API->>API: PolicyService.create — date check, premium calc, coverage ≥ 10× premium
   API-->>SPA: 201 Policy ACTIVE
   F->>SPA: report hail damage
   SPA->>API: POST /api/claims (damage date, description, policy)
@@ -58,7 +58,7 @@ sequenceDiagram
   A->>SPA: open claim queue (GET /api/claims — all)
   A->>SPA: set damage %, decision, notes
   SPA->>API: PUT /api/claims/{id}/assess
-  API->>API: @PreAuthorize('ASSESSOR') → ClaimService.assess: payout = f(coverage, %, deductible)
+  API->>API: @PreAuthorize('ASSESSOR') → ClaimService.assess: payout = coverage × % × (1 − deductible%)
   API-->>SPA: 200 Claim APPROVED (damagePercent, payoutEur, assessedBy)
 ```
 
@@ -107,11 +107,21 @@ classDiagram
 
 Business rules enforced in `calculate` / `validate`:
 
-1. `base = cropType.baseRateEurPerHa × hectares`
-2. `premium = base × bundesland.riskFactor × droughtAdjustment × deductible.premiumFactor`
+1. `hectares ≥ 0.1` and `coverage ≥ €1,000` (hard floors, `IllegalArgumentException`)
+2. `base = cropType.baseRateEurPerHa × hectares`
+3. `premium = base × bundesland.riskFactor × droughtAdjustment × deductible.premiumFactor`
    (rounded to cents, `MIN_PREMIUM_EUR = 50`)
-3. Coverage ≤ `MAX_COVERAGE_EUR = 500_000`
-4. `coverage ≥ 10 × premium` (insurance principle)
+4. Coverage ≤ `MAX_COVERAGE_EUR = 500_000`
+5. `coverage ≥ 10 × premium` (insurance principle, checked in `PolicyService.create`)
+6. Payout: `coverage × damagePercent/100 × (1 − deductible.percentage/100)`
+   (`calculatePayout`, used by `ClaimService.assess`)
 
 `DwdRiskGridService` resolves a GK3 coordinate to the 1 km grid cell and returns index 0–10
 (adjustment 0.8–1.5). With null coordinates the drought adjustment is skipped (1.0).
+
+**Claim status machine (as implemented):** `Claim.Status` defines six states — `SUBMITTED`,
+`UNDER_REVIEW`, `ASSESSED`, `APPROVED`, `REJECTED`, `PAID`. The API currently uses only three
+of them: `submit()` creates claims as `SUBMITTED`, and `assess()` (allowed from `SUBMITTED`
+or `UNDER_REVIEW`) sets the status directly to the assessor's decision (`APPROVED` or
+`REJECTED`). No code path sets `UNDER_REVIEW`, `ASSESSED`, or `PAID` — they are forward-compat
+placeholders, not reachable states.

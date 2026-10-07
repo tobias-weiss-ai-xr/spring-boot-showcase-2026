@@ -16,7 +16,9 @@ payouts, and approve or reject them.
 - **Quoting & pricing** — premium calculation with two location-based risk adjustments:
   Bundesland hail-risk factor (DWD-based) and a 1 km DWD drought index grid (GK3 coordinates).
 - **Policy management** — farm plots, insurance policies, coverage/deductible options.
-- **Claims workflow** — `SUBMITTED → ASSESSED → APPROVED / REJECTED` with payout calculation.
+- **Claims workflow** — `SUBMITTED → APPROVED / REJECTED` via assessor review, with payout
+  calculation (further statuses `UNDER_REVIEW`, `ASSESSED`, `PAID` exist in the enum but are not
+  set by any API path).
 - **Hail events** — registered storms that can be linked to claims.
 - **Security** — JWT authentication with two roles: `FARMER` (files claims) and
   `ASSESSOR` (assesses claims).

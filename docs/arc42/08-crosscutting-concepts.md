@@ -5,8 +5,8 @@ Concepts that apply to the whole system.
 ## 1. Security *(course module 8)*
 
 - **Stateless JWT**: `POST /api/auth/login` validates against the `insureds` table
-  (`BCryptPasswordEncoder.matches`) and returns a signed HS256/HS512 JWT
-  (`JwtService.generateToken(subject=email, role)`).
+  (`BCryptPasswordEncoder.matches`) and returns a signed HS512 JWT
+  (key derived from the 63-char dev secret; TTL 86400 s = 24 h).
 - **Filter chain**: `SecurityConfig` — CSRF off, `STATELESS`, permits `/api/auth/**`,
   `/api/insureds/**`, `/h2-console/**`, `/actuator/**`; `JwtAuthFilter` runs before
   `UsernamePasswordAuthenticationFilter` and populates the `SecurityContext` with
@@ -16,6 +16,9 @@ Concepts that apply to the whole system.
 - **Passwords**: BCrypt-hashed; the hash is never serialized (`@JsonIgnore`).
 - **Known dev-only shortcuts**: hardcoded secret in `application.yml`, token TTL 86400 s —
   explicitly non-production (ADR-002).
+- **Claim status machine**: `SUBMITTED → APPROVED/REJECTED` via `assess()`; the enum's
+  `UNDER_REVIEW`/`ASSESSED`/`PAID` are defined but unreachable through the current API
+  (see 06 Runtime View).
 
 ## 2. Error Handling *(module 6)*
 
@@ -61,8 +64,8 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 ## 7. Observability *(module 10)*
 
 - Actuator exposes `health, info, metrics` with `show-details: always`.
-- Custom `DatabaseHealthIndicator` executes a `SELECT COUNT` against each table and reports
-  the counts (e.g. `insureds: 2`).
+- Custom `DatabaseHealthIndicator` executes a `SELECT COUNT(*)` on the `insureds` table and
+  reports the row count as the `insureds` health detail.
 
 ## 8. Frontend cross-cutting
 

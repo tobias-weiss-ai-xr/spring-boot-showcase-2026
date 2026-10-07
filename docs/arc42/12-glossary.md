@@ -18,5 +18,5 @@
 | **GK3 coordinates** | Gauss-Krüger zone 3 easting/northing (meters) used to look up the drought grid cell. |
 | **Open-Session-In-View (OSIV)** | Spring feature keeping the Hibernate session open through view rendering; disabled here, hence the EAGER associations (ADR-005). |
 | **RFC 7807 `ProblemDetail`** | Standard JSON error body: `type, title, status, detail, instance`. |
-| **JWT** | JSON Web Token carrying `sub` (email) and `role`; signed with the dev secret, 24 h TTL. |
-| **Dedicated terms in the SPA** | Quote (live premium preview), plot/policy/claim forms, claim queue (assessor view), hail-event table. |
+| **JWT** | JSON Web Token carrying `sub` (email) and `role`; signed HS512 with the dev secret, 24 h TTL. |
+| **Quote** | Live premium preview in the farmer SPA (`GET /api/policies/quote`), showing the full price breakdown. |

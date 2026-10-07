@@ -15,7 +15,8 @@ claims (Schaeden) which assessors (Gutachter) review, calculate payouts, and app
   location-specific drought adjustment via GK3 coordinates (0.8–1.5x)
 - **Crop type catalog** — 14 crops from WHEAT (45 EUR/ha) to HOPS (350 EUR/ha)
 - **Premium calculation** — `base × hectares × bundesland.riskFactor × droughtAdjustment × deductible.premiumFactor`
-- **Claim workflow** — SUBMITTED → ASSESSED → APPROVED/REJECTED with payout calculation
+- **Claim workflow** — SUBMITTED → APPROVED/REJECTED via assessor review, with payout
+  calculation (the enum also defines UNDER_REVIEW, ASSESSED, PAID, but no API path sets them yet)
 - **Hail events** — batch linking of claims to registered storms
 
 ## Quick Start
