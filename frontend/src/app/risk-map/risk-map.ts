@@ -18,7 +18,7 @@ const COLORS = [
   templateUrl: './risk-map.html',
   styles: `
     .map-wrap { position: relative; }
-    canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+    canvas { width: 100%; max-width: 260px; height: auto; display: block; border-radius: 6px; }
     .map-tip {
       position: absolute; pointer-events: none; z-index: 2;
       background: #1f2d1f; color: #fff; font-size: 0.75rem;
