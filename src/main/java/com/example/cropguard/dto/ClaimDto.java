@@ -22,7 +22,4 @@ public record ClaimDto(
     @NotNull(message = "Policy ID is required")
     Long policyId
 ) {
-    public String effectiveStatus() {
-        return (status == null || status.isBlank()) ? "SUBMITTED" : status.toUpperCase();
-    }
 }

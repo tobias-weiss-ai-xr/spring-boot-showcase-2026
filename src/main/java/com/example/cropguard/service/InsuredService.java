@@ -24,11 +24,13 @@ public class InsuredService {
         if (insuredRepository.existsByEmail(dto.email())) {
             throw new BusinessException("Email already registered: " + dto.email());
         }
+        // public endpoint: role from the payload is ignored — accounts created here are always
+        // FARMER (otherwise anyone could self-register as ASSESSOR). Assessors come from seeding.
         Insured insured = new Insured(
             dto.name(),
             dto.email(),
             passwordEncoder.encode(dto.password()),
-            dto.effectiveRole(),
+            "FARMER",
             dto.bundesland() != null ? dto.bundesland() : Bundesland.HESSEN
         );
         return insuredRepository.save(insured);

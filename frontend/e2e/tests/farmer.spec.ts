@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures';
 import { loginAsFarmer } from '../fixtures';
+import { login } from '../helpers/api';
 
 test.describe('Farmer dashboard', () => {
   test('quote recalculates when the crop changes', async ({ page, newFarmer }) => {
@@ -39,6 +40,19 @@ test.describe('Farmer dashboard', () => {
     await expect(farmer.claimRows).toHaveCount(1);
     await expect(farmer.claimRows.first()).toContainText('Vollständiger Ernteverlust durch Hagel');
     await expect(farmer.claimRows.first()).toContainText('SUBMITTED');
+  });
+
+  test('farmer scoping: GET /api/claims never returns other farmers claims', async ({ page, request, newFarmer }) => {
+    const { token } = await login(request, newFarmer.email);
+
+    const res = await request.get('http://localhost:8080/api/claims', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(res.ok()).toBeTruthy();
+    const claims = await res.json();
+    // the seeded demo claim belongs to max@bauernhof.de — a fresh farmer must not see it
+    expect(claims.every((c: { damageDescription: string }) =>
+      !c.damageDescription.includes('Vollstaendiger'))).toBe(true);
   });
 
   test('renders the DWD risk map with drawn grid cells', async ({ page, newFarmer }) => {

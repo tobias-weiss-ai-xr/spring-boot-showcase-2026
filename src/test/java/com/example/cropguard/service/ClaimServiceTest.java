@@ -6,6 +6,7 @@ import com.example.cropguard.domain.Deductible;
 import com.example.cropguard.dto.AssessClaimDto;
 import com.example.cropguard.dto.ClaimDto;
 import com.example.cropguard.entity.Claim;
+import com.example.cropguard.entity.Insured;
 import com.example.cropguard.entity.Plot;
 import com.example.cropguard.entity.Policy;
 import com.example.cropguard.exception.BusinessException;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +34,7 @@ class ClaimServiceTest {
 
     @Test
     void submit_onActivePolicy_returnsSubmittedClaim() {
-        Plot plot = new Plot(CropType.WHEAT, 25.0, Bundesland.HESSEN, 0.0, 0.0, "test", null);
+        Plot plot = plotOwnedBy(7L);
         Policy policy = new Policy(25000.0, 1125.0, Deductible.TEN_PERCENT,
             Policy.Status.ACTIVE, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 12, 31), plot);
         when(policyService.findById(1L)).thenReturn(policy);
@@ -41,13 +43,33 @@ class ClaimServiceTest {
         ClaimDto dto = new ClaimDto(null, LocalDate.of(2026, 7, 15),
             "Hail damage on wheat field", "SUBMITTED", null, 1L);
 
-        Claim result = claimService.submit(dto);
+        Claim result = claimService.submit(dto, 7L);
         assertEquals(Claim.Status.SUBMITTED, result.getStatus());
     }
 
     @Test
+    void submit_onForeignPolicy_throwsBusinessException() {
+        Plot plot = plotOwnedBy(7L);
+        Policy policy = new Policy(25000.0, 1125.0, Deductible.TEN_PERCENT,
+            Policy.Status.ACTIVE, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 12, 31), plot);
+        when(policyService.findById(1L)).thenReturn(policy);
+
+        ClaimDto dto = new ClaimDto(null, LocalDate.of(2026, 7, 15),
+            "Hail damage on wheat field", "SUBMITTED", null, 1L);
+
+        assertThrows(BusinessException.class, () -> claimService.submit(dto, 8L));
+    }
+
+    /** Plot entity has no setters — the owner is mocked in. */
+    private Plot plotOwnedBy(long insuredId) {
+        Insured owner = mock(Insured.class);
+        when(owner.getId()).thenReturn(insuredId);
+        return new Plot(CropType.WHEAT, 25.0, Bundesland.HESSEN, 0.0, 0.0, "test", owner);
+    }
+
+    @Test
     void submit_onExpiredPolicy_throwsBusinessException() {
-        Plot plot = new Plot(CropType.WHEAT, 25.0, Bundesland.HESSEN, 0.0, 0.0, "test", null);
+        Plot plot = plotOwnedBy(7L);
         Policy policy = new Policy(25000.0, 1125.0, Deductible.TEN_PERCENT,
             Policy.Status.EXPIRED, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 12, 31), plot);
         when(policyService.findById(1L)).thenReturn(policy);
@@ -55,7 +77,7 @@ class ClaimServiceTest {
         ClaimDto dto = new ClaimDto(null, LocalDate.of(2026, 7, 15),
             "Hail damage on wheat field", "SUBMITTED", null, 1L);
 
-        assertThrows(BusinessException.class, () -> claimService.submit(dto));
+        assertThrows(BusinessException.class, () -> claimService.submit(dto, 7L));
     }
 
     @Test

@@ -26,8 +26,12 @@ public class ClaimService {
         this.premiumCalculator = premiumCalculator;
     }
 
-    public Claim submit(ClaimDto dto) {
+    public Claim submit(ClaimDto dto, Long requesterInsuredId) {
         Policy policy = policyService.findById(dto.policyId());
+
+        if (!policy.getPlot().getInsured().getId().equals(requesterInsuredId)) {
+            throw new BusinessException("Policy does not belong to the authenticated farmer");
+        }
 
         if (policy.getStatus() != Policy.Status.ACTIVE) {
             throw new BusinessException(

@@ -24,7 +24,4 @@ public record PolicyDto(
     @NotNull(message = "Plot ID is required")
     Long plotId
 ) {
-    public String effectiveStatus() {
-        return (status == null || status.isBlank()) ? "QUOTE" : status.toUpperCase();
-    }
 }

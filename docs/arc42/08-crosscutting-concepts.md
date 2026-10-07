@@ -11,14 +11,22 @@ Concepts that apply to the whole system.
   `/api/insureds/**`, `/h2-console/**`, `/actuator/**`; `JwtAuthFilter` runs before
   `UsernamePasswordAuthenticationFilter` and populates the `SecurityContext` with
   `ROLE_<role>`.
-- **Authorization**: method security (`@EnableMethodSecurity`) + `@PreAuthorize(
-  "hasRole('ASSESSOR')")` on the assess endpoint. Route guards on the frontend mirror this.
+- **Authorization**: method security (`@EnableMethodSecurity`) + `@PreAuthorize` on the assess
+  (ASSESSOR) and plot-creation (FARMER) endpoints. Route guards on the frontend mirror this.
+- **Ownership / tenant scoping**: farmers only ever see and mutate their own plots, policies and
+  claims — list endpoints scope by the JWT subject, and create/submit verify that the referenced
+  plot/policy belongs to the caller (rejects cross-tenant IDs from the payload). Assessors see
+  everything. `assess` accepts only `APPROVED|REJECTED`; the claim status machine is server-owned.
+- **Public registration**: `POST /api/insureds` ignores the `role` field and always creates a
+  FARMER (no self-registered assessors — assessors exist only via seeding).
+- **Unauthenticated API calls** get **401** (via `HttpStatusEntryPoint`), wrong role gets 403.
 - **Passwords**: BCrypt-hashed; the hash is never serialized (`@JsonIgnore`).
 - **Known dev-only shortcuts**: hardcoded secret in `application.yml`, token TTL 86400 s —
   explicitly non-production (ADR-002).
-- **Claim status machine**: `SUBMITTED → APPROVED/REJECTED` via `assess()`; the enum's
-  `UNDER_REVIEW`/`ASSESSED`/`PAID` are defined but unreachable through the current API
-  (see 06 Runtime View).
+- **Claim status machine**: `SUBMITTED → APPROVED/REJECTED` via `assess()` (decision is
+  whitelist-validated); the enum's `UNDER_REVIEW`/`ASSESSED`/`PAID` are defined but unreachable
+  through the current API (see 06 Runtime View). Policies are created server-side as `ACTIVE` —
+  clients cannot set statuses.
 
 ## 2. Error Handling *(module 6)*
 

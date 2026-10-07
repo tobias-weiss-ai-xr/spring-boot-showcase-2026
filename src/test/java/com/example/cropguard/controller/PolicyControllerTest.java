@@ -9,6 +9,8 @@ import com.example.cropguard.entity.Plot;
 import com.example.cropguard.entity.Policy;
 import com.example.cropguard.security.JwtService;
 import com.example.cropguard.service.PolicyService;
+import com.example.cropguard.entity.Insured;
+import com.example.cropguard.service.InsuredService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,16 +33,20 @@ class PolicyControllerTest {
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper om;
     @MockBean PolicyService policyService;
+    @MockBean InsuredService insuredService;
     @MockBean JwtService jwtService;
     @MockBean AppProperties appProperties;
 
     @Test
     @WithMockUser(roles = "FARMER")
     void createPolicy_returns201() throws Exception {
+        Insured me = mock(Insured.class);
+        when(me.getId()).thenReturn(1L);
+        when(insuredService.findByEmail(any())).thenReturn(me);
         Plot plot = new Plot(CropType.WHEAT, 25.0, Bundesland.HESSEN, 0.0, 0.0, "test", null);
         Policy policy = new Policy(25000.0, 1125.0, Deductible.TEN_PERCENT,
             Policy.Status.ACTIVE, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 12, 31), plot);
-        when(policyService.create(any())).thenReturn(policy);
+        when(policyService.create(any(), any())).thenReturn(policy);
 
         PolicyDto dto = new PolicyDto(null, 25000.0, Deductible.TEN_PERCENT,
             "ACTIVE", LocalDate.of(2026, 3, 1), LocalDate.of(2026, 12, 31), 1L);

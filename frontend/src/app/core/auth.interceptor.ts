@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
 import { AuthService } from './auth.service';
@@ -7,6 +8,7 @@ import { AuthService } from './auth.service';
 /** Adds the Bearer token to every request; on 401 clears the session and returns to login. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  const router = inject(Router);
   const token = auth.token();
   const cloned = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
 
@@ -14,6 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(err => {
       if (err.status === 401 && !req.url.includes('/api/auth/login')) {
         auth.logout();
+        router.navigate(['/login']);
       }
       return throwError(() => err);
     })

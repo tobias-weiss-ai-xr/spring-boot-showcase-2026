@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 /** Module 8: Assessor-only DTO for reviewing a claim. */
 public record AssessClaimDto(
@@ -13,7 +14,9 @@ public record AssessClaimDto(
     Double damagePercent,
 
     @NotBlank(message = "Decision is required")
-    String decision,  // APPROVED or REJECTED
+    @Pattern(regexp = "(?i)APPROVED|REJECTED",
+        message = "Decision must be APPROVED or REJECTED")
+    String decision,
 
     String assessorNotes
 ) {}

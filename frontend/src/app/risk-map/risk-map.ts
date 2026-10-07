@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject, input, signal, viewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect, inject, input, signal, viewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Plot, RiskMapData } from '../models';
@@ -32,8 +32,10 @@ const COLORS = [
     .legend .chip { width: 16px; height: 10px; display: inline-block; }
   `
 })
-export class RiskMap implements OnInit {
+export class RiskMap implements OnInit, OnDestroy {
   private http = inject(HttpClient);
+
+  private alive = true;
 
   readonly plots = input<Plot[]>([]);
   readonly data = signal<RiskMapData | null>(null);
@@ -51,9 +53,14 @@ export class RiskMap implements OnInit {
   ngOnInit(): void {
     this.http.get<RiskMapData>('/api/risk-map', { params: { step: 4 } })
       .subscribe(m => {
+        if (!this.alive) return;
         this.data.set(m);
         this.draw();
       });
+  }
+
+  ngOnDestroy(): void {
+    this.alive = false;
   }
 
   private draw(): void {

@@ -25,8 +25,13 @@ public class PolicyService {
         this.premiumCalculator = premiumCalculator;
     }
 
-    public Policy create(PolicyDto dto) {
+    public Policy create(PolicyDto dto, Long requesterInsuredId) {
         Plot plot = plotService.findById(dto.plotId());
+
+        if (!plot.getInsured().getId().equals(requesterInsuredId)) {
+            throw new BusinessException("Plot does not belong to the authenticated farmer");
+        }
+
         Deductible deductible = dto.deductible() != null ? dto.deductible() : Deductible.NONE;
 
         if (dto.coverageEnd().isBefore(dto.coverageStart())) {
@@ -48,7 +53,7 @@ public class PolicyService {
             dto.coverageEur(),
             premium.premiumEur(),
             deductible,
-            Policy.Status.valueOf(dto.effectiveStatus()),
+            Policy.Status.ACTIVE,  // server-owned: clients cannot create EXPIRED/CANCELLED policies
             dto.coverageStart(),
             dto.coverageEnd(),
             plot
@@ -69,6 +74,10 @@ public class PolicyService {
 
     public List<Policy> findByInsuredId(Long insuredId) {
         return policyRepository.findByPlotInsuredId(insuredId);
+    }
+
+    public List<Policy> findAll() {
+        return policyRepository.findAll();
     }
 
     public Policy findById(Long id) {

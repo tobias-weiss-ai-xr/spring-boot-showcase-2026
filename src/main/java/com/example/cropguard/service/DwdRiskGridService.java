@@ -85,9 +85,8 @@ public class DwdRiskGridService {
      * NODATA cells keep their value so the client can render them as background.
      */
     public RiskMapData sampled(int step) {
-        if (step < 1) {
-            step = 1;
-        }
+        // ponytail: clamp instead of validating — protects against step=1 full-res dumps (2+ MB)
+        step = Math.max(2, Math.min(20, step));
         int cols = (ncols + step - 1) / step;
         int rows = (nrows + step - 1) / step;
         int[][] values = new int[rows][cols];

@@ -21,8 +21,8 @@ public class PlotService {
         this.insuredService = insuredService;
     }
 
-    public Plot register(PlotDto dto) {
-        Insured insured = insuredService.findById(dto.insuredId());
+    public Plot register(PlotDto dto, Long insuredId) {
+        Insured insured = insuredService.findById(insuredId);
         Plot plot = new Plot(
             dto.cropType(),
             dto.hectares(),
@@ -41,6 +41,10 @@ public class PlotService {
 
     public List<Plot> findByBundesland(Bundesland bundesland) {
         return plotRepository.findByBundesland(bundesland);
+    }
+
+    public List<Plot> findAll() {
+        return plotRepository.findAll();
     }
 
     public List<Plot> findByCropType(CropType cropType) {

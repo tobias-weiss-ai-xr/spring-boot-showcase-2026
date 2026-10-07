@@ -149,7 +149,8 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
 - **Risk map** — canvas heat map of the DWD drought index grid with plot markers and hover
   tooltip, shown on both dashboards (`GET /api/risk-map`)
 - JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
-  returns you to the login page
+  logs out and returns you to the login page. Server-side, farmers only ever see their own
+  plots/policies/claims (tenant scoping), and public registration always creates a FARMER account.
 
 Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 11 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, the assessor claim workflow, and the DWD risk map.
 

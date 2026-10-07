@@ -35,7 +35,12 @@ export class AuthService {
   }
 
   private load(): LoginResponse | null {
-    const raw = localStorage.getItem(this.storageKey);
-    return raw ? JSON.parse(raw) as LoginResponse : null;
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      return raw ? JSON.parse(raw) as LoginResponse : null;
+    } catch {
+      localStorage.removeItem(this.storageKey);
+      return null;
+    }
   }
 }

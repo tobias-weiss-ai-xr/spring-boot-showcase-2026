@@ -23,7 +23,4 @@ public record InsuredDto(
 
     Bundesland bundesland
 ) {
-    public String effectiveRole() {
-        return (role == null || role.isBlank()) ? "FARMER" : role.toUpperCase();
-    }
 }
