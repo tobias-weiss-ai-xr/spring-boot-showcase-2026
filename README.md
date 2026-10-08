@@ -154,7 +154,7 @@ Each demo concept below corresponds to a Sapiens product area:
         └────────────┘
 ```
 
-Run with `mvn test`. 23 tests, all passing.
+Run with `mvn test`. 42 tests, all passing.
 
 ## Frontend (Angular)
 
@@ -184,7 +184,7 @@ Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
   logs out and returns you to the login page. Server-side, farmers only ever see their own
   plots/policies/claims (tenant scoping), and public registration always creates a FARMER account.
 
-Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 11 e2e specs cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, the assessor claim workflow, and the DWD risk map.
+Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 12 e2e tests cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, the assessor claim workflow, and the DWD risk map.
 
 ## Architecture Documentation
 
@@ -204,7 +204,8 @@ src/main/java/com/example/cropguard/
 ├── dto/                         # Records with validation (M4)
 ├── entity/                      # JPA entities (M5)
 ├── exception/                   # RFC 7807 error handling (M6)
+├── modules/                     # policy/billing/claims module boundaries (services)
 ├── repository/                  # Spring Data JPA (M5)
 ├── security/                    # JWT auth (M8)
-└── service/                     # Business logic (M2), DwdRiskGridService (DWD grid)
+└── service/                     # Cross-module services (auth, insured, plot, hail events)
 ```
