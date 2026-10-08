@@ -87,7 +87,7 @@
         "docs/arc42/10-quality-requirements.md",
         "docs/arc42/08-crosscutting-concepts.md"
       ],
-      "accept": "JAVA_HOME=\"/c/Program Files/Java/jdk-22\" mvn -q verify && cd frontend && npx ng build && npx playwright test",
+      "accept": "mvn -q verify && cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "No page without the token design; layout usable at 360px; contrast/focus states pass a manual a11y checklist; every list has skeleton + empty state; mvn verify green (42 tests), Karma green, full Playwright suite green; README documents the two persona portals and the guided claim journey; arc42 05 shows the portal sections, arc42 10 carries the exact verified test counts."
     }
   ]
