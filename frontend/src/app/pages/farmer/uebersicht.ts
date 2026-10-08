@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { httpErrorDetail } from '../../core/errors';
 import { Claim, Policy, QuoteResult, BUNDESLAENDER, CROP_TYPES, DEDUCTIBLES } from '../../models';
@@ -16,7 +17,7 @@ const CLAIM_CLOSED = ['APPROVED', 'REJECTED', 'PAID'];
 /** Farmer portal — Übersicht: customer-360 (KPIs, Policen, Schaden-Timeline) + live Quote-Rechner. */
 @Component({
   selector: 'app-farmer-uebersicht',
-  imports: [FormsModule, CurrencyPipe, DecimalPipe, DatePipe, Badge, EmptyState, KpiCard, Skeleton],
+  imports: [FormsModule, CurrencyPipe, DecimalPipe, DatePipe, RouterLink, Badge, EmptyState, KpiCard, Skeleton],
   templateUrl: './uebersicht.html'
 })
 export class Uebersicht implements OnInit {
@@ -33,6 +34,14 @@ export class Uebersicht implements OnInit {
   readonly activePolicies = computed(() => this.policies().filter(p => p.status === 'ACTIVE'));
   readonly totalCoverage = computed(() => this.activePolicies().reduce((sum, p) => sum + p.coverageEur, 0));
   readonly openClaims = computed(() => this.claims().filter(c => !CLAIM_CLOSED.includes(c.status)));
+
+  /** MeineVH-style Kacheln (tile navigation with live counts). */
+  readonly tiles = computed(() => [
+    { path: '/farmer/anbau', icon: '🌱', label: 'Anbau', count: 'Anbauverzeichnis führen (WEB AV)' },
+    { path: '/farmer/vertraege', icon: '📄', label: 'Meine Verträge', count: `${this.activePolicies().length} aktiv` },
+    { path: '/farmer/schaeden', icon: '⛈️', label: 'Schaden', count: `${this.openClaims().length} offen` },
+    { path: '/farmer/lage', icon: '🌦️', label: 'Wetter & Lage', count: 'Risiko- und Ereignislage' },
+  ]);
   readonly recentClaims = computed(() =>
     [...this.claims()].sort((a, b) => b.damageDate.localeCompare(a.damageDate)).slice(0, 5));
 

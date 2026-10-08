@@ -7,7 +7,7 @@ test.describe('Authentication', () => {
     await login.goto();
     await login.loginAs('max@bauernhof.de', 'passwort123');
     await expect(page).toHaveURL(/\/farmer\/uebersicht$/);
-    await expect(page.getByRole('heading', { name: /Mein Betrieb/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /MeineCropGuard/ })).toBeVisible();
     await expect(page.getByText(/Max Mustermann/).first()).toContainText('FARMER');
   });
 
@@ -16,7 +16,7 @@ test.describe('Authentication', () => {
     await login.goto();
     await login.loginAs('lisa@cropguard.de', 'assessor123');
     await expect(page).toHaveURL(/\/assessor\/aufgaben$/);
-    await expect(page.getByRole('heading', { name: 'Gutachter-Portal' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Sachverständigen-Portal' })).toBeVisible();
     await expect(page.getByText(/Lisa Gutachter/).first()).toContainText('ASSESSOR');
   });
 
@@ -34,7 +34,7 @@ test.describe('Authentication', () => {
     await register.goto();
     await register.registerFarmer('Neue Bäuerin', email, 'geheim123');
     await expect(page).toHaveURL(/\/farmer\/uebersicht$/);
-    await expect(page.getByRole('heading', { name: /Mein Betrieb/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /MeineCropGuard/ })).toBeVisible();
   });
 
   test('portal nav switches sections and legacy /farmer deep link redirects to the first section', async ({ page }) => {

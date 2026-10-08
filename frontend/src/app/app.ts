@@ -11,9 +11,9 @@ interface NavItem {
 const FARMER_NAV: NavItem[] = [
   { path: '/farmer/uebersicht', label: 'Übersicht' },
   { path: '/farmer/anbau', label: 'Anbau' },
-  { path: '/farmer/vertraege', label: 'Verträge' },
-  { path: '/farmer/schaeden', label: 'Schäden' },
-  { path: '/farmer/lage', label: 'Lage' },
+  { path: '/farmer/vertraege', label: 'Meine Verträge' },
+  { path: '/farmer/schaeden', label: 'Schaden' },
+  { path: '/farmer/lage', label: 'Wetter & Lage' },
 ];
 
 const ASSESSOR_NAV: NavItem[] = [
@@ -39,7 +39,7 @@ export class App {
   });
 
   protected readonly portalTitle = computed(() =>
-    this.auth.role() === 'ASSESSOR' ? 'Gutachter-Portal' : 'Mein Betrieb (Landwirt:in)');
+    this.auth.role() === 'ASSESSOR' ? 'Sachverständigen-Portal' : 'MeineCropGuard — Ihr Portal');
 
   constructor(private router: Router) {}
 

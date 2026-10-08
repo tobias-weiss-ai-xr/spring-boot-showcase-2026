@@ -16,13 +16,23 @@
   <div class="alert error" role="alert">{{ dataError() }}</div>
 }
 
+<nav class="tiles" aria-label="Portal-Kacheln">
+  @for (t of tiles(); track t.path) {
+    <a class="tile" [routerLink]="t.path">
+      <span class="tile-icon" aria-hidden="true">{{ t.icon }}</span>
+      <span class="tile-label">{{ t.label }}</span>
+      <span class="tile-count">{{ t.count }}</span>
+    </a>
+  }
+</nav>
+
 <div class="grid">
   <section class="card table-card">
     <h3>Policen</h3>
     @if (loading()) {
       <app-skeleton [lines]="4" />
     } @else if (policies().length === 0) {
-      <app-empty-state message="Noch keine Police — schließen Sie Ihre erste unter „Verträge“ ab." icon="📄" />
+      <app-empty-state message="Noch keine Police — schließen Sie Ihre erste unter „Meine Verträge“ ab." icon="📄" />
     } @else {
       <table>
         <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Status</th><th>Laufzeit</th></tr></thead>
@@ -121,7 +131,7 @@
         <dt>Selbstbehalt</dt><dd>× {{ r.deductibleAdjustment | number:'1.2-2' }}</dd>
         <dt>Dürreindex (DWD)</dt><dd>{{ r.droughtIndex }} (× {{ r.droughtAdjustment | number:'1.2-2' }})</dd>
       </dl>
-      <p class="muted">Versichern Sie dann Ihre Fläche unter „Verträge“ und schließen Sie eine Police ab.</p>
+      <p class="muted">Versichern Sie dann Ihre Fläche unter „Meine Verträge“ und schließen Sie eine Police ab.</p>
     } @else {
       <p class="muted">Formular ausfüllen — die Quote wird live berechnet.</p>
     }

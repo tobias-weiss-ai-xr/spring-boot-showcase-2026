@@ -1,5 +1,5 @@
 <header class="topbar">
-  <span class="brand">🌾 CropGuard</span>
+  <span class="brand">🌾 MeineCropGuard</span>
   @if (auth.role(); as role) {
     <nav class="portal-nav" aria-label="Portal-Navigation">
       @for (item of nav(); track item.path) {
@@ -11,6 +11,7 @@
     <span class="user">
       {{ u.name }} ·
       <span class="badge" [class]="'badge role-' + u.role.toLowerCase()">{{ u.role }}</span>
+      @if (u.role === 'FARMER') { <span class="user-meta">Mitglied</span> } @else { <span class="user-meta">Sachverständige:r</span> }
       <a class="logout" href="#" (click)="$event.preventDefault(); logout()">Abmelden</a>
     </span>
   }
@@ -23,3 +24,8 @@
 <main>
   <router-outlet />
 </main>
+<footer class="portal-footer">
+  <span><strong>MeineCropGuard</strong> — Demo-Portal im Stil von MeineVH®</span>
+  <span>Grundsatz: <em>Einer für alle, alle für einen.</em></span>
+  <span>Schadenbüro-Hotline: <strong>0800 300500</strong> · Gießen</span>
+</footer>

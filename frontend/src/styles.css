@@ -1,21 +1,23 @@
 /* ============================================================
    CropGuard design tokens — single source of truth, no framework.
-   Palette: insurance blue + neutral gray, agrarian green as accent.
+   Palette: aligned with VEREINIGTE HAGEL production — brand green
+   (#509e2f/#3c7723 from vereinigte-hagel.net) as primary, steel blue
+   (#53779b from the MeineVH portal stylesheet) as secondary accent.
    ponytail: tokens-in-one-file; extract theme when a second app needs it.
    ============================================================ */
 :root {
-  /* — palette: blue (primary), gray (neutral), green (agarian accent) — */
-  --blue-900: #142f4f;
-  --blue-800: #1b3d66;
-  --blue-700: #1f4d85;
-  --blue-600: #2560a5;
-  --blue-100: #d9e6f4;
-  --blue-50: #eef4fa;
-  --green-800: #2c5e34;
-  --green-700: #35713f;
-  --green-600: #3f8449;
-  --green-100: #ddefdf;
-  --green-50: #eff7f0;
+  /* — palette: green (VH brand primary), steel blue (portal accent), gray (neutral) — */
+  --green-800: #2f5c1b;
+  --green-700: #3c7723;
+  --green-600: #509e2f;
+  --green-100: #e3f0da;
+  --green-50: #f1f8ec;
+  --blue-900: #22303f;
+  --blue-800: #3d5166;
+  --blue-700: #53779b; /* steel blue — MeineVH portal stylesheet */
+  --blue-600: #6b8cad;
+  --blue-100: #dde7f0;
+  --blue-50: #eff4f8;
   --gray-900: #16202e;
   --gray-700: #3a4757;
   --gray-500: #526073; /* ≥4.5:1 on every gray surface incl. gray-200 (AA) */
@@ -32,9 +34,9 @@
   --color-border: var(--gray-200);
   --color-text: var(--gray-900);
   --color-text-muted: var(--gray-500);
-  --color-primary: var(--blue-700);
-  --color-primary-strong: var(--blue-800);
-  --color-accent: var(--green-700);
+  --color-primary: var(--green-700);
+  --color-primary-strong: var(--green-800);
+  --color-accent: var(--blue-700);
   --color-error: var(--red-700);
 
   /* — spacing scale — */
@@ -111,7 +113,7 @@ body {
   flex-wrap: wrap; /* stays usable at 360px */
   gap: var(--space-2) var(--space-4);
   padding: var(--space-3) var(--space-5);
-  background: linear-gradient(90deg, var(--blue-900), var(--blue-700));
+  background: linear-gradient(90deg, var(--green-800), var(--green-600));
   color: #fff;
   box-shadow: var(--shadow-1);
 }
@@ -175,7 +177,7 @@ main { max-width: 1100px; margin: 0 auto; padding: var(--space-4) var(--space-5)
   overflow: hidden;
 }
 .auth-aside {
-  background: linear-gradient(160deg, var(--blue-900) 0%, var(--blue-700) 60%, var(--green-700) 130%);
+  background: linear-gradient(160deg, var(--green-800) 0%, var(--green-700) 60%, var(--green-600) 130%);
   color: #fff;
   padding: var(--space-6);
   display: flex;
@@ -422,3 +424,48 @@ tbody tr:hover { background: var(--blue-50); }
 .badge.active { background: var(--blue-100); color: var(--blue-800); }
 .badge.under_review { background: var(--status-assessed-bg); color: var(--status-assessed); }
 .badge.paid { background: var(--status-approved-bg); color: var(--status-approved); }
+
+/* ---------- MeineVH-aligned portal home: Kachel grid (tile navigation) ---------- */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+.tile:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
+.tile .tile-icon { font-size: 1.5rem; line-height: 1; }
+.tile .tile-label { font-weight: var(--weight-bold); }
+.tile .tile-count { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+/* ---------- footer (VH-style service bar) ---------- */
+
+.portal-footer {
+  margin-top: var(--space-7);
+  padding: var(--space-4) var(--space-5);
+  border-top: 3px solid var(--color-primary);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: space-between;
+}
+.portal-footer strong { color: var(--color-text); }
+
+.user-meta { opacity: 0.85; margin-left: 0.25rem; }

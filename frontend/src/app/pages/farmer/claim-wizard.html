@@ -35,6 +35,7 @@
         <label>Schadensdatum
           <input type="date" [(ngModel)]="damageDate" name="damageDate" required>
         </label>
+        <p class="hint">Bitte melden Sie Schäden umgehend — <strong>spätestens innerhalb von 4 Tagen</strong> (Meldefrist).</p>
         <label>Ursache (Hagelereignis, optional)
           <select [(ngModel)]="hailEventId" name="hailEventId">
             <option [ngValue]="null">– kein Ereignis verknüpft –</option>

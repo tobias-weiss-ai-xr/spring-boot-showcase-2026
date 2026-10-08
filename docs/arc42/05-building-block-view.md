@@ -121,15 +121,16 @@ C4Component
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
 ```
 
-**Portal sections**
+**Portal sections** (aligned with MeineVH® production: VH brand green, tile navigation
+("Kacheln"), WEB AV®/member wording — see README)
 
 | Portal | Section (route) | Content |
 |--------|-----------------|---------|
-| Farmer | Übersicht `/farmer/uebersicht` | KPI cards, own policies table, recent-claims timeline, live premium quote calculator |
-| Farmer | Anbau `/farmer/anbau` | Managed plot table + side-panel plot creation (GK3 coordinates) |
-| Farmer | Verträge `/farmer/vertraege` | Policy purchase form + own policy list with status badges |
-| Farmer | Schäden `/farmer/schaeden` | 4-step FNOL wizard (guided claim journey) + claim history with hail-event linkage |
-| Farmer | Lage `/farmer/lage` | DWD drought risk map with own plot markers |
+| Farmer | Übersicht `/farmer/uebersicht` | MeineVH-style tile grid (Anbau / Meine Verträge / Schaden / Wetter & Lage with live counts), KPI cards, own policies table, recent-claims timeline, live premium quote calculator |
+| Farmer | Anbau `/farmer/anbau` | Managed plot table + side-panel plot creation (GK3 coordinates) — WEB AV pattern |
+| Farmer | Meine Verträge `/farmer/vertraege` | Policy purchase form + own policy list with status badges |
+| Farmer | Schaden `/farmer/schaeden` | 4-step FNOL wizard (guided claim journey, 4-day reporting hint) + claim history with hail-event linkage |
+| Farmer | Wetter & Lage `/farmer/lage` | DWD drought risk map with own plot markers |
 | Assessor | Aufgaben `/assessor/aufgaben` | Workbench: KPI row (open items / open sum / paid sum), status-filter + sortable claim queue, assess panel with customer/policy context |
 | Assessor | Lagebild `/assessor/lagebild` | Registered hail-event feed (severity badges) + portfolio-wide risk map |
 
