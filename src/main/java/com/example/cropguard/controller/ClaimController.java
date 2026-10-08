@@ -5,7 +5,7 @@ import com.example.cropguard.dto.ClaimDto;
 import com.example.cropguard.entity.Claim;
 import com.example.cropguard.entity.Insured;
 import com.example.cropguard.exception.BusinessException;
-import com.example.cropguard.service.ClaimService;
+import com.example.cropguard.modules.claims.ClaimService;
 import com.example.cropguard.service.InsuredService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

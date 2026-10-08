@@ -2,7 +2,7 @@ package com.example.cropguard.controller;
 
 import com.example.cropguard.config.AppProperties;
 import com.example.cropguard.security.JwtService;
-import com.example.cropguard.service.DwdRiskGridService;
+import com.example.cropguard.modules.billing.DwdRiskGridService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

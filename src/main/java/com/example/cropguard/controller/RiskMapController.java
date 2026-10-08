@@ -1,6 +1,6 @@
 package com.example.cropguard.controller;
 
-import com.example.cropguard.service.DwdRiskGridService;
+import com.example.cropguard.modules.billing.DwdRiskGridService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

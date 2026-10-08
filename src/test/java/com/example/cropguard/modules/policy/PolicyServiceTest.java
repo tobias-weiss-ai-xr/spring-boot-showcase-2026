@@ -1,4 +1,4 @@
-package com.example.cropguard.service;
+package com.example.cropguard.modules.policy;
 
 import com.example.cropguard.domain.Bundesland;
 import com.example.cropguard.domain.CropType;
@@ -8,7 +8,9 @@ import com.example.cropguard.entity.Insured;
 import com.example.cropguard.entity.Plot;
 import com.example.cropguard.entity.Policy;
 import com.example.cropguard.exception.BusinessException;
+import com.example.cropguard.modules.billing.PremiumCalculator;
 import com.example.cropguard.repository.PolicyRepository;
+import com.example.cropguard.service.PlotService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

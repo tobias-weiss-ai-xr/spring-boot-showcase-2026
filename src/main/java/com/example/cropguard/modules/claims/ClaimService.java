@@ -1,4 +1,4 @@
-package com.example.cropguard.service;
+package com.example.cropguard.modules.claims;
 
 import com.example.cropguard.domain.Deductible;
 import com.example.cropguard.dto.AssessClaimDto;
@@ -7,6 +7,8 @@ import com.example.cropguard.entity.Claim;
 import com.example.cropguard.entity.Policy;
 import com.example.cropguard.exception.BusinessException;
 import com.example.cropguard.exception.ResourceNotFoundException;
+import com.example.cropguard.modules.billing.PremiumCalculator;
+import com.example.cropguard.modules.policy.PolicyService;
 import com.example.cropguard.repository.ClaimRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
