@@ -32,17 +32,27 @@ demonstrability first, correctness second, and simplicity throughout.
    works immediately. Cost: data is lost on restart — acceptable and *documented*.
 
 6. **A real test pyramid + browser E2E**
-   23 backend tests (unit/slice/integration), 2 Karma component tests, 11 Playwright
+   42 backend tests (unit/slice/integration), 2 Karma component tests, 12 Playwright
    end-to-end scenarios that prove real user journeys (login, quoting, plot→policy→claim,
    assess workflow, role guards). E2E tests seed their own unique data through the REST API
    to stay deterministic against the shared dev database.
+
+7. **Insurance-core patterns over hardcoded product data (Sapiens alignment)**
+   Rating values live in loader-validated YAML packs (`rating/default.yml` + country
+   override `rating/pl.yml`) instead of enum constants — a new tariff is a config entry,
+   not a redeploy. The core is split into `modules/{policy,billing,claims}`
+   (PolicyMaster/BillingMaster/ClaimsMaster pattern) with a boundary test, the OpenAPI
+   document is a tested contract, and a config-gated legacy CSV import demonstrates
+   Bestands-Migration. See README "Sapiens Mapping".
 
 ## Resulting shape
 
 ```
 cropguard/                      # backend (Spring Boot 3.3.5, Java 21, H2)
 ├── controller/  dto/  service/  repository/  entity/
+├── modules/{policy,billing,claims}/   # Sapiens-style core modules + boundary test
 ├── domain/  exception/  security/  config/  actuator/
+├── resources/rating/*.yml            # rating packs (default + country override)
 └── src/test/ …                    # pyramid: @SpringBootTest, @WebMvcTest, @DataJpaTest, Mockito
 frontend/                       # Angular 20 SPA (standalone, plain CSS)
 └── e2e/                         # Playwright suite (POMs, API fixtures, HTML report)

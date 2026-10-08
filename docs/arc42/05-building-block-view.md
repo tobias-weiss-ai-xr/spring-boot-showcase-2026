@@ -45,7 +45,10 @@ C4Component
 
     Component(ctrl, "Controllers", "Spring MVC", "REST endpoints; @Valid; @PreAuthorize; maps to ProblemDetail via advice")
     Component(sec, "Security", "JwtService, JwtAuthFilter, SecurityConfig, AppProperties", "JWT issue/validate; stateless chain; BCrypt; method security")
+    Component(mods, "Modules", "modules.policy / modules.billing / modules.claims", "Sapiens-style core modules (PolicyMaster/BillingMaster/ClaimsMaster); boundary test blocks cross-module repo access")
     Component(svc, "Services", "Spring beans", "PolicyService, ClaimService, HailEventService, InsuredService, AuthService, PlotService")
+    Component(packs, "RatingPackService", "config-driven rating", "loads YAML rating packs (default + country override), fail-fast validation; PremiumCalculator resolves values via it")
+    Component(legacy, "LegacyImportService", "optional CommandLineRunner", "cropguard.legacy-import.enabled: validates legacy CSV, per-row failure report (off by default)")
     Component(calc, "PremiumCalculator", "core domain logic", "premium formula + coverage rules")
     Component(dwd, "DwdRiskGridService", "grid lookup", "index + adjustment from coordinates")
     Component(repo, "Repositories", "Spring Data JPA", "derived queries per entity")

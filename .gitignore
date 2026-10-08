@@ -11,3 +11,4 @@ target/
 .mvn/
 .mvn/wrapper/
 HELP.md
+state/
