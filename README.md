@@ -124,6 +124,24 @@ curl http://localhost:8080/actuator/health
 | 9. Configuration | `config/AppProperties` + profiles (`application-dev.yml`) |
 | 10. Actuator | `actuator/DatabaseHealthIndicator` + `/actuator/health` |
 
+## Sapiens Mapping
+
+How this demo maps to the [Sapiens IDITSuite](https://www.sapiens.com/products/iditsuite/) — the
+commercial insurance platform this course compares against. Sapiens IDITSuite is proprietary SaaS
+with no public source code; customers configure and integrate it rather than modify its source.
+Each demo concept below corresponds to a Sapiens product area:
+
+| Sapiens | Where in this project |
+|---------|----------------------|
+| PolicyMaster | `modules.policy/PolicyService` — policy issuance, quoting, and lifecycle status |
+| BillingMaster | `modules.billing` — premium calculation and quote generation |
+| ClaimsMaster | `modules.claims/ClaimService` — claim intake, assessment, and payout workflow |
+| Smart Packs | `src/main/resources/rating/*.yml` — validated rating-pack YAMLs driving premium rates |
+| Country layer | `rating/pl.yml` — country override packs merged over the base pack (`RatingPackService`) |
+| ACE | `config/OpenApiConfig` + springdoc — the OpenAPI contract for external integrations |
+| DigitalSuite | `frontend/` — the Angular SPA for policyholder/assessor self-service |
+| DataSuite | `actuator/DatabaseHealthIndicator` + `/api/risk-map` — health/portfolio data for analytics |
+
 ## Test Pyramid
 
 ```
