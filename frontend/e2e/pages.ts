@@ -68,15 +68,24 @@ export class FarmerVertraege {
   readonly policyRows = this.page.locator('section', { hasText: 'Meine Policen' }).locator('tbody tr');
 }
 
-/** /farmer/schaeden — claim form + claim table. */
+/** /farmer/schaeden — FNOL wizard (4 steps) + claim table. */
 export class FarmerSchaeden {
   constructor(readonly page: Page) {}
 
   readonly policySelect = this.page.getByLabel('Police');
   readonly damageDate = this.page.getByLabel('Schadensdatum');
+  readonly hailEvent = this.page.getByLabel('Ursache');
   readonly damageDescription = this.page.getByLabel('Beschreibung');
+  readonly backButton = this.page.getByRole('button', { name: 'Zurück' });
+  readonly nextButton = this.page.getByRole('button', { name: 'Weiter' });
   readonly fileClaimButton = this.page.getByRole('button', { name: 'Schaden melden' });
+  readonly summary = this.page.locator('dl.kv');
   readonly claimRows = this.page.locator('section', { hasText: 'Meine Schäden' }).locator('tbody tr');
+
+  /** Step indicator pill (1-based). */
+  stepPill(n: number) {
+    return this.page.locator('.steps .badge').nth(n - 1);
+  }
 }
 
 /** /farmer/lage — DWD risk map. */

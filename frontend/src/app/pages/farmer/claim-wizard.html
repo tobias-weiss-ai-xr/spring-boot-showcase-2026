@@ -1,0 +1,95 @@
+<section class="card">
+  <h3>Schaden melden</h3>
+
+  <div class="steps row">
+    @for (label of stepLabels; track label; let i = $index) {
+      <span
+        class="badge"
+        [class.approved]="i + 1 < step()"
+        [class.submitted]="i + 1 === step()"
+        [class.muted]="i + 1 > step()"
+        [attr.aria-current]="i + 1 === step() ? 'step' : null"
+        (click)="goto(i + 1)">
+        {{ i + 1 }} · {{ label }}
+      </span>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="alert error" role="alert">{{ error() }}</div>
+  }
+
+  <form (ngSubmit)="confirm()">
+    @switch (step()) {
+      @case (1) {
+        <label>Police
+          <select [(ngModel)]="policyId" name="policyId" required>
+            @for (p of policies(); track p.id) {
+              <option [ngValue]="p.id">#{{ p.id }} · {{ p.plot.cropType }} · {{ p.coverageEur }} €</option>
+            }
+          </select>
+        </label>
+        <p class="hint">Schritt 1 von 4 — Feld/Police wählen, für die der Schaden gemeldet wird.</p>
+      }
+      @case (2) {
+        <label>Schadensdatum
+          <input type="date" [(ngModel)]="damageDate" name="damageDate" required>
+        </label>
+        <label>Ursache (Hagelereignis, optional)
+          <select [(ngModel)]="hailEventId" name="hailEventId">
+            <option [ngValue]="null">– kein Ereignis verknüpft –</option>
+            @for (e of hailEvents(); track e.id) {
+              <option [ngValue]="e.id">#{{ e.id }} · {{ e.eventDate | date:'dd.MM.yyyy' }} · {{ e.severity }}</option>
+            }
+          </select>
+        </label>
+        <p class="hint">Schritt 2 von 4 — Wann hat der Schaden stattgefunden? Ggf. ein offizielles Hagelereignis verknüpfen.</p>
+      }
+      @case (3) {
+        <label>Umfang & Beschreibung
+          <textarea [(ngModel)]="description" name="description" rows="4" required minlength="10"
+            placeholder="z. B. Vollständiger Ernteverlust auf 25 ha Weizen durch Hagel …"></textarea>
+        </label>
+        <p class="hint">Schritt 3 von 4 — Umfang des Schadens beschreiben (mind. 10 Zeichen).</p>
+      }
+      @case (4) {
+        <dl class="kv">
+          <dt>Police</dt>
+          <dd>
+            @if (selectedPolicy(); as p) {
+              #{{ policyId() }} · {{ p.plot.cropType }} · {{ p.coverageEur }} €
+            } @else {
+              –
+            }
+          </dd>
+          <dt>Schadensdatum</dt>
+          <dd>{{ damageDate() | date:'dd.MM.yyyy' }}</dd>
+          <dt>Hagelereignis</dt>
+          <dd>
+            @if (selectedHailEvent(); as e) {
+              #{{ e.id }} · {{ e.eventDate | date:'dd.MM.yyyy' }} · {{ e.severity }}
+            } @else {
+              –
+            }
+          </dd>
+          <dt>Beschreibung</dt>
+          <dd>{{ description() }}</dd>
+        </dl>
+        <p class="hint">Schritt 4 von 4 — Bitte alle Angaben prüfen, sie sind danach read-only.</p>
+        <button type="submit" [disabled]="submitting()">Schaden melden</button>
+      }
+    }
+
+    <div class="row">
+      @if (step() > 1) {
+        <button type="button" (click)="back()">Zurück</button>
+      }
+      @if (step() < 4) {
+        <button type="button" [disabled]="!stepValid()" (click)="next()">Weiter</button>
+      }
+    </div>
+    @if (step() < 4 && !stepValid()) {
+      <p class="hint">Bitte alle Pflichtfelder dieses Schritts ausfüllen, um fortzufahren.</p>
+    }
+  </form>
+</section>

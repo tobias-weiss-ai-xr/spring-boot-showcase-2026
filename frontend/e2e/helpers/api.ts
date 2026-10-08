@@ -32,12 +32,11 @@ export async function login(
   return res.json();
 }
 
-/** Seeds the full claim pipeline and returns the unique damage description. */
-export async function seedClaim(
+/** Seeds plot + active policy for a fresh farmer; returns the farmer email and policy id. */
+export async function seedPolicy(
   request: APIRequestContext,
-  description = `Hagelschaden ${uniqueEmail()}`,
-): Promise<{ email: string; description: string }> {
-  const email = uniqueEmail();
+  email = uniqueEmail(),
+): Promise<{ email: string; policyId: number }> {
   await registerFarmer(request, email);
   const { token, id } = await login(request, email);
 
@@ -61,6 +60,17 @@ export async function seedClaim(
   });
   expectOk(policyRes, 'create policy');
   const policyId = (await policyRes.json()).id;
+
+  return { email, policyId };
+}
+
+/** Seeds the full claim pipeline and returns the unique damage description. */
+export async function seedClaim(
+  request: APIRequestContext,
+  description = `Hagelschaden ${uniqueEmail()}`,
+): Promise<{ email: string; description: string }> {
+  const { email, policyId } = await seedPolicy(request);
+  const { token } = await login(request, email);
 
   const claimRes = await request.post(`${API}/claims`, {
     headers: auth(token),
