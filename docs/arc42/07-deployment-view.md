@@ -67,13 +67,17 @@ Live at **https://cropguard.graphwiz.ai** (edge host `195.90.216.159`, traefik f
 - Stack: `docker-compose.prod.yml` on the host (`~/cropguard`) — same two services as the
   local compose, but the backend has **no published port** (internal only, reached through
   the SPA's nginx proxy) and the frontend publishes `127.0.0.1:3011` only.
+- **Persistence**: the prod backend overrides the datasource to an H2 **file DB** on a named
+  volume (`cropguard-data:/data`, `jdbc:h2:file:/data/cropguard`, `ddl-auto: update`) — data
+  survives container restarts. `DataInitializer` seeds only when the database is empty
+  (guarded by `insuredRepo.count()`), so restarts neither duplicate nor wipe demo data.
+  Dev/e2e stay in-memory (`create-drop`, fresh seed per boot) via `application.yml`.
 - Routing: traefik file-provider routers (`cropguard-http` → redirect, `cropguard-secure` with
   `security-headers` + `compression` + LE cert) point to `http://127.0.0.1:3011`; mirrored in
   the ansible repo (`inventory/host_vars/contextual-intelligence.org.yaml`).
 - Images are **built locally** and transferred (`docker save | docker load`) — the shared edge
   host is memory-constrained for container builds (see its post-mortem notes), so no build
   runs there. Deploy: `docker compose -f docker-compose.prod.yml up -d` after loading images.
-- Same demo caveat: H2 in-memory, data resets when the backend container restarts.
 
 ## CI (GitHub Actions)
 

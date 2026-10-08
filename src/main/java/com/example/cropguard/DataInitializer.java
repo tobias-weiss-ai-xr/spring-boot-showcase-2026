@@ -33,6 +33,12 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // seed only an empty database — with a persistent DB (prod volume) this runs once,
+        // with in-memory H2 (dev/e2e, create-drop) it seeds on every boot
+        if (insuredRepo.count() > 0) {
+            return;
+        }
+
         Insured farmer = insuredRepo.save(new Insured(
             "Max Mustermann", "max@bauernhof.de",
             passwordEncoder.encode("passwort123"), "FARMER", Bundesland.HESSEN));

@@ -3,7 +3,7 @@
 | # | Risk | Likelihood | Impact | Mitigation |
 |---|------|------------|--------|------------|
 | 1 | **Hardcoded JWT dev secret** — if reused in any real system, tokens are forgeable. | Low (demo-only) | High | Documented non-goal (ADR-002); secret is obviously a placeholder (`cropguard-dev-secret-…`); no production deployment exists. |
-| 2 | **In-memory H2 + `create-drop` loses all data on restart.** | Certain by design | Medium | Accepted demo trade-off; `DataInitializer` reseeds identical sample data on every boot. |
+| 2 | **In-memory H2 + `create-drop` loses all data on restart** (dev/e2e by design). | Certain by design | Medium | Accepted dev trade-off; `DataInitializer` reseeds identical sample data on every boot. The **prod** deployment uses a persistent H2 file DB on a Docker volume with a count-guarded seeder (see 07). |
 | 3 | **Static DWD snapshot drifts** from the live 1991–2020 baseline (frozen dataset). | Medium (values are historical by nature) | Low | The snapshot *is* a fixed historical baseline, so it cannot "drift" factually; reproducibility was the goal. A live DWD source can replace it behind `DwdRiskGridService`. |
 | 4 | **EAGER `@ManyToOne` → N+1 selects** as claim/policy data grows. | Medium | Medium | Correct only at demo scale (ADR-005). Upgrade path: response-DTO projection or fetch joins, tracked in the code comment. |
 | 5 | **Entity-as-API-contract** — response shape is coupled to JPA mapping; a schema change ripples into the SPA. | Medium | Medium | ADR-005 trade-off; the frontend `models.ts` mirrors entities. Long-term fix is a proper DTO layer. |
