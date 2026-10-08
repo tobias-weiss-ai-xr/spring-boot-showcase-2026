@@ -1,3 +1,72 @@
+@if (loading()) {
+  <div class="kpi-row" aria-hidden="true">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="card"><app-skeleton [lines]="2" /></div>
+    }
+  </div>
+} @else {
+  <div class="kpi-row">
+    <app-kpi-card label="Aktive Policen" [value]="activePolicies().length" />
+    <app-kpi-card label="Versicherungssumme (aktiv)" [value]="totalCoverage() | currency:'EUR':'symbol':'1.0-0'" />
+    <app-kpi-card label="Offene Schäden" [value]="openClaims().length" />
+  </div>
+}
+
+@if (dataError()) {
+  <div class="alert error" role="alert">{{ dataError() }}</div>
+}
+
+<div class="grid">
+  <section class="card table-card">
+    <h3>Policen</h3>
+    @if (loading()) {
+      <app-skeleton [lines]="4" />
+    } @else if (policies().length === 0) {
+      <app-empty-state message="Noch keine Police — schließen Sie Ihre erste unter „Verträge“ ab." icon="📄" />
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Status</th><th>Laufzeit</th></tr></thead>
+        <tbody>
+          @for (p of policies(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.plot.cropType }} · {{ p.plot.locationDescription }}</td>
+              <td>{{ p.coverageEur | currency:'EUR' }}</td>
+              <td>{{ p.premiumEur | currency:'EUR' }}</td>
+              <td><app-badge [status]="p.status" /></td>
+              <td>{{ p.coverageStart | date:'dd.MM.yyyy' }} – {{ p.coverageEnd | date:'dd.MM.yyyy' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="card">
+    <h3>Letzte Schäden</h3>
+    @if (loading()) {
+      <app-skeleton [lines]="4" />
+    } @else if (claims().length === 0) {
+      <app-empty-state message="Keine Schadensmeldungen." icon="⛈️" />
+    } @else {
+      <ol class="timeline">
+        @for (c of recentClaims(); track c.id) {
+          <li [class]="'tl-' + c.status.toLowerCase()">
+            <div class="timeline-head">
+              <span class="timeline-date">{{ c.damageDate | date:'dd.MM.yyyy' }}</span>
+              <app-badge [status]="c.status" />
+            </div>
+            <p class="timeline-text">{{ c.damageDescription }}</p>
+            @if (c.payoutEur) {
+              <p class="timeline-payout">Auszahlung: {{ c.payoutEur | currency:'EUR' }}</p>
+            }
+          </li>
+        }
+      </ol>
+    }
+  </section>
+</div>
+
 <div class="grid">
   <section class="card">
     <h3>Prämien-Quote</h3>

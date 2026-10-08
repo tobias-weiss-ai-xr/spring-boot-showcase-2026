@@ -1,28 +1,62 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
-import { QuoteResult, CROP_TYPES, BUNDESLAENDER, DEDUCTIBLES } from '../../models';
+import { Claim, Policy, QuoteResult, BUNDESLAENDER, CROP_TYPES, DEDUCTIBLES } from '../../models';
+import { Badge } from '../../shared/ui/badge';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { KpiCard } from '../../shared/ui/kpi-card';
+import { Skeleton } from '../../shared/ui/skeleton';
 
-/** Farmer portal — Übersicht: live premium quote calculator. */
+/** Final claim states — everything else counts as "open". */
+const CLAIM_CLOSED = ['APPROVED', 'REJECTED', 'PAID'];
+
+/** Farmer portal — Übersicht: customer-360 (KPIs, Policen, Schaden-Timeline) + live Quote-Rechner. */
 @Component({
   selector: 'app-farmer-uebersicht',
-  imports: [FormsModule, CurrencyPipe, DecimalPipe],
+  imports: [FormsModule, CurrencyPipe, DecimalPipe, DatePipe, Badge, EmptyState, KpiCard, Skeleton],
   templateUrl: './uebersicht.html'
 })
-export class Uebersicht {
+export class Uebersicht implements OnInit {
   private http = inject(HttpClient);
 
   readonly quoteResult = signal<QuoteResult | null>(null);
   readonly error = signal('');
+
+  readonly policies = signal<Policy[]>([]);
+  readonly claims = signal<Claim[]>([]);
+  readonly dataError = signal('');
+  readonly loading = signal(true);
+
+  readonly activePolicies = computed(() => this.policies().filter(p => p.status === 'ACTIVE'));
+  readonly totalCoverage = computed(() => this.activePolicies().reduce((sum, p) => sum + p.coverageEur, 0));
+  readonly openClaims = computed(() => this.claims().filter(c => !CLAIM_CLOSED.includes(c.status)));
+  readonly recentClaims = computed(() =>
+    [...this.claims()].sort((a, b) => b.damageDate.localeCompare(a.damageDate)).slice(0, 5));
 
   quote = { cropType: 'WHEAT', hectares: 25, bundesland: 'HESSEN', deductible: 'TEN_PERCENT', coverageEur: 25000, coordinateE: 3700000, coordinateN: 5570000 };
 
   readonly cropTypes = CROP_TYPES;
   readonly bundeslaender = BUNDESLAENDER;
   readonly deductibles = DEDUCTIBLES;
+
+  ngOnInit(): void {
+    let pending = 2;
+    const settle = (e?: unknown): void => {
+      if (e) this.dataError.set(httpErrorDetail(e));
+      if (--pending === 0) this.loading.set(false);
+    };
+    this.http.get<Policy[]>('/api/policies').subscribe({
+      next: p => { this.policies.set(p); settle(); },
+      error: e => settle(e)
+    });
+    this.http.get<Claim[]>('/api/claims').subscribe({
+      next: c => { this.claims.set(c); settle(); },
+      error: e => settle(e)
+    });
+  }
 
   quoteNow(): void {
     this.error.set('');

@@ -5,11 +5,14 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
 import { Plot, Policy, DEDUCTIBLES } from '../../models';
+import { Badge } from '../../shared/ui/badge';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { Skeleton } from '../../shared/ui/skeleton';
 
-/** Farmer portal — Verträge: policy list + policy creation. */
+/** Farmer portal — Verträge: policy detail table + policy creation. */
 @Component({
   selector: 'app-farmer-vertraege',
-  imports: [FormsModule, CurrencyPipe, DatePipe],
+  imports: [FormsModule, CurrencyPipe, DatePipe, Badge, EmptyState, Skeleton],
   templateUrl: './vertraege.html'
 })
 export class Vertraege implements OnInit {

@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
 import { httpErrorDetail } from '../../core/errors';
 import { Plot, CROP_TYPES, BUNDESLAENDER } from '../../models';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { Skeleton } from '../../shared/ui/skeleton';
 
-/** Farmer portal — Anbau: plot management (create + overview of fields). */
+/** Farmer portal — Anbau: Anbau-Verzeichnis (managed plot table incl. GK3) + side-panel create form. */
 @Component({
   selector: 'app-farmer-anbau',
-  imports: [FormsModule],
+  imports: [FormsModule, EmptyState, Skeleton],
   templateUrl: './anbau.html'
 })
 export class Anbau implements OnInit {

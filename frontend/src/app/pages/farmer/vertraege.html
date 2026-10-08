@@ -1,5 +1,5 @@
 @if (loading()) {
-  <p class="muted">Daten werden geladen …</p>
+  <div class="card"><app-skeleton [lines]="5" /></div>
 }
 @if (flash(); as f) {
   <div class="alert success" role="status">{{ f }}</div>
@@ -43,19 +43,25 @@
 
   <section class="card table-card">
     <h3>Meine Policen</h3>
-    @if (policies().length === 0) {
-      <p class="muted">Noch keine Police.</p>
+    @if (loading()) {
+      <app-skeleton [lines]="4" />
+    } @else if (policies().length === 0) {
+      <app-empty-state message="Noch keine Police — schließen Sie Ihre erste links ab." icon="📄" />
     } @else {
       <table>
-        <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Status</th><th>Laufzeit</th></tr></thead>
+        <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Selbstbehalt</th><th>Status</th><th>Laufzeit</th></tr></thead>
         <tbody>
           @for (p of policies(); track p.id) {
             <tr>
               <td>{{ p.id }}</td>
-              <td>{{ p.plot.cropType }} · {{ p.plot.locationDescription }}</td>
+              <td>
+                {{ p.plot.cropType }} · {{ p.plot.locationDescription }}<br>
+                <span class="geo muted">{{ p.plot.coordinateE ?? '–' }} / {{ p.plot.coordinateN ?? '–' }}</span>
+              </td>
               <td>{{ p.coverageEur | currency:'EUR' }}</td>
               <td>{{ p.premiumEur | currency:'EUR' }}</td>
-              <td><span class="badge" [class]="'badge ' + p.status.toLowerCase()">{{ p.status }}</span></td>
+              <td>{{ p.deductible }}</td>
+              <td><app-badge [status]="p.status" /></td>
               <td>{{ p.coverageStart | date:'dd.MM.yyyy' }} – {{ p.coverageEnd | date:'dd.MM.yyyy' }}</td>
             </tr>
           }
