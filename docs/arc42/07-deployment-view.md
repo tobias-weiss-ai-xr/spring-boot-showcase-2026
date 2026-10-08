@@ -59,6 +59,22 @@ Same trade-off as the dev setup: H2 is in-memory, so **data resets when the back
 restarts** (`DataInitializer` reseeds). The compose stack is a demo deployment, not a
 production target.
 
+## Production deployment: cropguard.graphwiz.ai
+
+Live at **https://cropguard.graphwiz.ai** (edge host `195.90.216.159`, traefik fronts
+`*.graphwiz.ai` and terminates Let's Encrypt via the `mytlschallenge` resolver).
+
+- Stack: `docker-compose.prod.yml` on the host (`~/cropguard`) — same two services as the
+  local compose, but the backend has **no published port** (internal only, reached through
+  the SPA's nginx proxy) and the frontend publishes `127.0.0.1:3011` only.
+- Routing: traefik file-provider routers (`cropguard-http` → redirect, `cropguard-secure` with
+  `security-headers` + `compression` + LE cert) point to `http://127.0.0.1:3011`; mirrored in
+  the ansible repo (`inventory/host_vars/contextual-intelligence.org.yaml`).
+- Images are **built locally** and transferred (`docker save | docker load`) — the shared edge
+  host is memory-constrained for container builds (see its post-mortem notes), so no build
+  runs there. Deploy: `docker compose -f docker-compose.prod.yml up -d` after loading images.
+- Same demo caveat: H2 in-memory, data resets when the backend container restarts.
+
 ## CI (GitHub Actions)
 
 `.github/workflows/ci.yml` runs on every push/PR, three jobs on `ubuntu-latest`:

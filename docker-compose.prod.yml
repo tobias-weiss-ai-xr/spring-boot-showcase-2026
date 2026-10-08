@@ -1,0 +1,18 @@
+# Production stack for the graphwiz.ai edge host (traefik fronts it).
+# Backend stays internal — the SPA's nginx proxies /api to it.
+# Frontend is published on loopback only; traefik routes the domain to it
+# (router block in /root/git/docker-traefik/dynamic/routers.yml on the host).
+services:
+  backend:
+    image: cropguard-backend:latest
+    expose:
+      - "8080"
+    restart: unless-stopped
+    # H2 in-memory: data resets on restart, DataInitializer reseeds (arc42 07/11)
+  frontend:
+    image: cropguard-frontend:latest
+    ports:
+      - "127.0.0.1:3011:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

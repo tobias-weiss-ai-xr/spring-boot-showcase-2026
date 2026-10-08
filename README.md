@@ -37,6 +37,9 @@ App starts at http://localhost:8080. H2 console at `/h2-console` (JDBC URL:
 `jdbc:h2:mem:cropguard`, user: `sa`, empty password). Live API docs:
 **http://localhost:8080/swagger-ui** (springdoc-openapi).
 
+**Deployed instance: https://cropguard.graphwiz.ai** (Docker on the graphwiz.ai edge host,
+traefik + Let's Encrypt — see arc42 07).
+
 Seeded users (created by `DataInitializer`):
 
 | Email | Password | Role |
