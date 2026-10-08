@@ -50,7 +50,7 @@ class DwdRiskGridServiceTest {
     @Test
     void premiumIncludesDroughtAdjustment() {
         DwdRiskGridService grid = createService();
-        PremiumCalculator calc = new PremiumCalculator(grid);
+        PremiumCalculator calc = new PremiumCalculator(grid, new RatingPackService());
 
         // Kassel area: drought index 2, adjustment 1.0 (baseline)
         var result = calc.calculate(CropType.WHEAT, 25.0, Bundesland.HESSEN,
@@ -70,7 +70,7 @@ class DwdRiskGridServiceTest {
     @Test
     void premiumWithHigherDroughtIndex() {
         DwdRiskGridService grid = createService();
-        PremiumCalculator calc = new PremiumCalculator(grid);
+        PremiumCalculator calc = new PremiumCalculator(grid, new RatingPackService());
 
         // Munich area: drought index 3, adjustment 1.05
         var result = calc.calculate(CropType.WHEAT, 25.0, Bundesland.BAYERN,
@@ -90,7 +90,7 @@ class DwdRiskGridServiceTest {
     @Test
     void premiumWithoutCoordinatesSkipsDroughtLookup() {
         DwdRiskGridService grid = createService();
-        PremiumCalculator calc = new PremiumCalculator(grid);
+        PremiumCalculator calc = new PremiumCalculator(grid, new RatingPackService());
 
         // No coordinates — drought lookup skipped, adjustment = 1.0
         var result = calc.calculate(CropType.WHEAT, 25.0, Bundesland.HESSEN,

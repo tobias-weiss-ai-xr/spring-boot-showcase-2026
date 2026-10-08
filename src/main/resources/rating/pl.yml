@@ -1,0 +1,14 @@
+# Country override pack (Poland) — merged over default.yml by RatingPackService.
+# Only the entries listed here differ from the DE base pack; everything else
+# is inherited. Same validation rules apply (unknown key / bad value -> fail fast).
+country: PL
+
+crops:
+  WHEAT:   { baseRateEurPerHa: 48.0,  riskCategory: MODERATE }
+  CORN:    { baseRateEurPerHa: 41.0,  riskCategory: MODERATE }
+  RAPESEED: { baseRateEurPerHa: 53.0,  riskCategory: MODERATE }
+  APPLES:  { baseRateEurPerHa: 165.0, riskCategory: HIGH }
+
+deductibles:
+  FIVE_PERCENT: { percentage: 5.0, premiumFactor: 0.90 }
+  TEN_PERCENT:  { percentage: 10.0, premiumFactor: 0.82 }

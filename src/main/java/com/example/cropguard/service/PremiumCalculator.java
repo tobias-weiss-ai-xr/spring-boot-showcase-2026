@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
  * The core domain logic: premium calculation for hail insurance.
  *
  * Formula:
- *   base = cropType.baseRateEurPerHa × hectares
- *   riskAdjusted = base × bundesland.riskFactor
- *   deductibleAdjusted = riskAdjusted × deductible.premiumFactor
+ *   base = ratingPacks.baseRateFor(cropType) × hectares
+ *   riskAdjusted = base × ratingPacks.riskFactorFor(bundesland)
+ *   deductibleAdjusted = riskAdjusted × ratingPacks.premiumFactorFor(deductible)
  *   premium = round(deductibleAdjusted, 2 decimal places)
+ *
+ * All rating values are resolved through {@link RatingPackService} (default
+ * country DE); see src/main/resources/rating/*.yml.
  *
  * Business rules:
  *   - Minimum premium: 50 EUR (admin fee for very small fields)
@@ -27,9 +30,11 @@ public class PremiumCalculator {
     private static final double MIN_COVERAGE_TO_PREMIUM_RATIO = 10.0;
 
     private final DwdRiskGridService dwdRiskGridService;
+    private final RatingPackService ratingPacks;
 
-    public PremiumCalculator(DwdRiskGridService dwdRiskGridService) {
+    public PremiumCalculator(DwdRiskGridService dwdRiskGridService, RatingPackService ratingPacks) {
         this.dwdRiskGridService = dwdRiskGridService;
+        this.ratingPacks = ratingPacks;
     }
 
     public record PremiumResult(
@@ -59,8 +64,10 @@ public class PremiumCalculator {
                                    Double coordinateE, Double coordinateN) {
         validate(hectares, coverageEur);
 
-        double base = cropType.getBaseRateEurPerHa() * hectares;
-        double bundeslandFactor = bundesland.getRiskFactor();
+        String country = RatingPackService.DEFAULT_COUNTRY;
+
+        double base = ratingPacks.baseRateFor(cropType, country) * hectares;
+        double bundeslandFactor = ratingPacks.riskFactorFor(bundesland, country);
 
         int droughtIndex = 0;
         double droughtAdj = 1.0;
@@ -70,14 +77,15 @@ public class PremiumCalculator {
         }
 
         double riskAdjusted = base * bundeslandFactor * droughtAdj;
-        double deductibleAdjusted = riskAdjusted * deductible.getPremiumFactor();
+        double premiumFactor = ratingPacks.premiumFactorFor(deductible, country);
+        double deductibleAdjusted = riskAdjusted * premiumFactor;
         double premium = Math.max(MIN_PREMIUM_EUR, Math.round(deductibleAdjusted * 100.0) / 100.0);
 
         return new PremiumResult(
             premium,
             Math.round(base * 100.0) / 100.0,
             bundeslandFactor * droughtAdj,
-            deductible.getPremiumFactor(),
+            premiumFactor,
             coverageEur,
             droughtIndex,
             droughtAdj
@@ -90,7 +98,7 @@ public class PremiumCalculator {
             throw new IllegalArgumentException("Damage percent must be 0–100, got: " + damagePercent);
         }
         double rawPayout = coverageEur * (damagePercent / 100.0);
-        double deductibleAmount = rawPayout * (deductible.getPercentage() / 100.0);
+        double deductibleAmount = rawPayout * (ratingPacks.percentageFor(deductible, RatingPackService.DEFAULT_COUNTRY) / 100.0);
         double payout = rawPayout - deductibleAmount;
         return Math.round(payout * 100.0) / 100.0;
     }

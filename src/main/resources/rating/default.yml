@@ -1,0 +1,47 @@
+# Base rating pack (Germany) — single source of truth for all premium ratings.
+# Loaded and validated by RatingPackService at startup:
+#   - unknown enum key            -> fail fast
+#   - baseRate/premiumFactor <= 0 -> fail fast
+#   - percentage < 0              -> fail fast
+country: DE
+
+crops:
+  WHEAT:        { baseRateEurPerHa: 45.0,  riskCategory: LOW }
+  BARLEY:       { baseRateEurPerHa: 42.0,  riskCategory: LOW }
+  CORN:         { baseRateEurPerHa: 38.0,  riskCategory: LOW }
+  RAPESEED:     { baseRateEurPerHa: 50.0,  riskCategory: MODERATE }
+  VINES:        { baseRateEurPerHa: 280.0, riskCategory: HIGH }
+  APPLES:       { baseRateEurPerHa: 180.0, riskCategory: HIGH }
+  PEARS:        { baseRateEurPerHa: 170.0, riskCategory: HIGH }
+  CHERRIES:     { baseRateEurPerHa: 220.0, riskCategory: HIGH }
+  STRAWBERRIES: { baseRateEurPerHa: 200.0, riskCategory: HIGH }
+  RASPBERRIES:  { baseRateEurPerHa: 210.0, riskCategory: HIGH }
+  POTATOES:     { baseRateEurPerHa: 55.0,  riskCategory: MODERATE }
+  VEGETABLES:   { baseRateEurPerHa: 90.0,  riskCategory: MODERATE }
+  TOBACCO:      { baseRateEurPerHa: 120.0, riskCategory: MODERATE }
+  HOPS:         { baseRateEurPerHa: 350.0, riskCategory: HIGH }
+
+bundeslaender:
+  BAYERN:               1.5
+  BADEN_WUERTTEMBERG:   1.4
+  HESSEN:               1.0
+  RHEINLAND_PFALZ:      1.1
+  SAARLAND:             1.1
+  THUERINGEN:           1.1
+  SACHSEN:              1.1
+  SACHSEN_ANHALT:       1.0
+  NORDRHEIN_WESTFALEN:  1.0
+  NIEDERSACHSEN:        0.85
+  SCHLESWIG_HOLSTEIN:   0.8
+  MECKLENBURG_VORPOMMERN: 0.8
+  BRANDENBURG:          0.9
+  BERLIN:               0.9
+  BREMEN:               0.85
+  HAMBURG:              0.85
+
+deductibles:
+  NONE:           { percentage: 0.0,  premiumFactor: 1.0 }
+  FIVE_PERCENT:   { percentage: 5.0,  premiumFactor: 0.92 }
+  TEN_PERCENT:    { percentage: 10.0, premiumFactor: 0.85 }
+  FIFTEEN_PERCENT: { percentage: 15.0, premiumFactor: 0.78 }
+  TWENTY_PERCENT: { percentage: 20.0, premiumFactor: 0.72 }
