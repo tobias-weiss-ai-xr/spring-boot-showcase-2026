@@ -6,5 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record AppProperties(
     String jwtSecret,
     long jwtExpirationSeconds,
-    String appName
-) {}
+    String appName,
+    LegacyImport legacyImport
+) {
+    /** Legacy data import switch. */
+    public record LegacyImport(boolean enabled) {}
+}
