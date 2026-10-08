@@ -5,7 +5,7 @@
 Angular-20-Standalone-SPA mit Signals, plain CSS (kein UI-Framework), deutsche UI.
 Heute: App-Shell mit Topbar + zwei Dashboard-Routen (`/farmer`, `/assessor`), die
 Formulare und Listen auf einer Seite stapeln. 12 Playwright-e2e-Specs sichern die
-Flows über Labels/Aria-Attribute (`exact: true`-Konvention). Zielbild: MeineVH-Portal +
+Flows über Labels/Aria-Attribute (`exact: true`-Konvention). Zielbild: Mitgliederportal +
 Sapiens-DigitalSuite-Muster (Persona-Portale, Guided Journeys, 360°-View,
 Workbench), siehe proposal.md.
 

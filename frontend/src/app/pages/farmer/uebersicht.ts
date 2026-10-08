@@ -35,9 +35,9 @@ export class Uebersicht implements OnInit {
   readonly totalCoverage = computed(() => this.activePolicies().reduce((sum, p) => sum + p.coverageEur, 0));
   readonly openClaims = computed(() => this.claims().filter(c => !CLAIM_CLOSED.includes(c.status)));
 
-  /** MeineVH-style Kacheln (tile navigation with live counts). */
+  /** Kacheln — tile navigation with live counts (portal-home pattern of established insurer portals). */
   readonly tiles = computed(() => [
-    { path: '/farmer/anbau', icon: '🌱', label: 'Anbau', count: 'Anbauverzeichnis führen (WEB AV)' },
+    { path: '/farmer/anbau', icon: '🌱', label: 'Anbau', count: 'Anbauverzeichnis führen' },
     { path: '/farmer/vertraege', icon: '📄', label: 'Meine Verträge', count: `${this.activePolicies().length} aktiv` },
     { path: '/farmer/schaeden', icon: '⛈️', label: 'Schaden', count: `${this.openClaims().length} offen` },
     { path: '/farmer/lage', icon: '🌦️', label: 'Wetter & Lage', count: 'Risiko- und Ereignislage' },

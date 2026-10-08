@@ -8,7 +8,7 @@ Introduce the token design system (palette/spacing/typography/radius/shadows + s
 ## Task UI-2: Farmer customer-360 (Übersicht + Anbau + Verträge)
 **Scope:** `frontend/src/app/pages/farmer/**`, `frontend/src/app/shared/ui/**` (new), `frontend/src/styles.css`
 **Accept:** `cd frontend && npx ng build && CI=true npx playwright test`
-Build shared UI primitives (Badge, KpiCard, Skeleton, EmptyState) as standalone components; create the farmer Übersicht section with KPI cards (active policies, total coverage, open claims), policy table with status badges + premium column and a recent-claims timeline; rework Anbau into a managed plot table (crop, area, Bundesland, GK3 coordinates display) with the create form in a side panel (WEB AV pattern); show Verträge as the policy detail table. All data from existing endpoints with skeleton loading; German labels throughout.
+Build shared UI primitives (Badge, KpiCard, Skeleton, EmptyState) as standalone components; create the farmer Übersicht section with KPI cards (active policies, total coverage, open claims), policy table with status badges + premium column and a recent-claims timeline; rework Anbau into a managed plot table (crop, area, Bundesland, GK3 coordinates display) with the create form in a side panel (managed register pattern); show Verträge as the policy detail table. All data from existing endpoints with skeleton loading; German labels throughout.
 
 ## Task UI-3: Guided claim journey (FNOL wizard)
 **Scope:** `frontend/src/app/pages/farmer/**` (claim wizard), `frontend/src/app/shared/ui/**`, `frontend/src/e2e/**`

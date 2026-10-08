@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Die CropGuard-SPA soll das reale Portal-Ökosystem der Vereinigten Hagel (MeineVH:
+Die CropGuard-SPA soll das reale Portal-Ökosystem eines führenden europäischen Agrarversicherers (dem Mitgliederportal:
 Anbaudeklaration, Online-Schadenmeldung, Feldstück-Sicht) und die Sapiens-DigitalSuite-Muster
 (Persona-Portale, Guided Journeys/FNOL, 360°-Customer-View, Workbench) im Nachbau spiegeln —
 ausschließlich über die bestehende REST-API, mit stabiler e2e-Suite.
@@ -81,7 +81,7 @@ and German UI throughout.
 ### Requirement: Documentation stays in sync
 README and arc42 docs SHALL be updated in the same change: portal structure (05 building
 block view), test counts after the UI regression (10), and a short note that the portal
-mirrors MeineVH/DigitalSuite patterns (README, Sapiens Mapping section).
+mirrors dem Mitgliederportal/DigitalSuite patterns (README, Sapiens Mapping section).
 
 #### Scenario: Docs reflect the new UI
 - **WHEN** the change is complete

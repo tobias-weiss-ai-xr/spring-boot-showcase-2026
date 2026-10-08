@@ -6,7 +6,7 @@ CropGuard is a demo application for a German agricultural hail insurer whose Bes
 is being modernised with Sapiens IDITSuite (PolicyMaster/BillingMaster/ClaimsMaster; config-driven
 "Smart Packs"; open API layer "ACE"; country layer). Sapiens has no public source code — customers
 configure and integrate. This change aligns CropGuard with those architectural patterns so the demo
-is a live, interview-ready mirror of the VH transformation context. It builds on (does not replace)
+is a live, interview-ready mirror of that transformation context. It builds on (does not replace)
 the course-module mapping in `openspec/specs/modules/spec.md`.
 
 ## ADDED Requirements

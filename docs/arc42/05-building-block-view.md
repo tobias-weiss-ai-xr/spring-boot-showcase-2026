@@ -121,13 +121,13 @@ C4Component
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
 ```
 
-**Portal sections** (aligned with MeineVH® production: VH brand green, tile navigation
-("Kacheln"), WEB AV®/member wording — see README)
+**Portal sections** (aligned with the tile-based member portals of leading agricultural
+insurers: brand-green design system, Kachel tile navigation, established portal wording — see README)
 
 | Portal | Section (route) | Content |
 |--------|-----------------|---------|
-| Farmer | Übersicht `/farmer/uebersicht` | MeineVH-style tile grid (Anbau / Meine Verträge / Schaden / Wetter & Lage with live counts), KPI cards, own policies table, recent-claims timeline, live premium quote calculator |
-| Farmer | Anbau `/farmer/anbau` | Managed plot table + side-panel plot creation (GK3 coordinates) — WEB AV pattern |
+| Farmer | Übersicht `/farmer/uebersicht` | Tile grid (Anbau / Meine Verträge / Schaden / Wetter & Lage with live counts), KPI cards, own policies table, recent-claims timeline, live premium quote calculator |
+| Farmer | Anbau `/farmer/anbau` | Managed plot table + side-panel plot creation (GK3 coordinates) — managed-register pattern |
 | Farmer | Meine Verträge `/farmer/vertraege` | Policy purchase form + own policy list with status badges |
 | Farmer | Schaden `/farmer/schaeden` | 4-step FNOL wizard (guided claim journey, 4-day reporting hint) + claim history with hail-event linkage |
 | Farmer | Wetter & Lage `/farmer/lage` | DWD drought risk map with own plot markers |

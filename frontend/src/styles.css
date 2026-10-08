@@ -1,12 +1,12 @@
 /* ============================================================
    CropGuard design tokens — single source of truth, no framework.
-   Palette: aligned with VEREINIGTE HAGEL production — brand green
-   (#509e2f/#3c7723 from vereinigte-hagel.net) as primary, steel blue
-   (#53779b from the MeineVH portal stylesheet) as secondary accent.
+   Palette: aligned with leading European agricultural insurers — brand green
+   (#509e2f/#3c7723) as primary, steel blue
+   (#53779b from an established insurer portal stylesheet) as secondary accent.
    ponytail: tokens-in-one-file; extract theme when a second app needs it.
    ============================================================ */
 :root {
-  /* — palette: green (VH brand primary), steel blue (portal accent), gray (neutral) — */
+  /* — palette: green (brand primary), steel blue (portal accent), gray (neutral) — */
   --green-800: #2f5c1b;
   --green-700: #3c7723;
   --green-600: #509e2f;
@@ -14,7 +14,7 @@
   --green-50: #f1f8ec;
   --blue-900: #22303f;
   --blue-800: #3d5166;
-  --blue-700: #53779b; /* steel blue — MeineVH portal stylesheet */
+  --blue-700: #53779b; /* steel blue — established insurer portal accent */
   --blue-600: #6b8cad;
   --blue-100: #dde7f0;
   --blue-50: #eff4f8;
@@ -340,7 +340,7 @@ tbody tr:hover { background: var(--blue-50); }
 @media (max-width: 800px) { .kpi-row { grid-template-columns: 1fr; } }
 .kpi-hint { font-size: var(--text-xs); color: var(--color-text-muted); }
 
-/* ---------- managed table + side panel (WEB AV pattern) ---------- */
+/* ---------- managed table + side panel (managed register pattern) ---------- */
 
 .with-side { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--space-4); align-items: start; }
 @media (max-width: 900px) { .with-side { grid-template-columns: 1fr; } }
@@ -425,7 +425,7 @@ tbody tr:hover { background: var(--blue-50); }
 .badge.under_review { background: var(--status-assessed-bg); color: var(--status-assessed); }
 .badge.paid { background: var(--status-approved-bg); color: var(--status-approved); }
 
-/* ---------- MeineVH-aligned portal home: Kachel grid (tile navigation) ---------- */
+/* ---------- portal home: Kachel grid (tile navigation) ---------- */
 
 .tiles {
   display: grid;
@@ -452,7 +452,7 @@ tbody tr:hover { background: var(--blue-50); }
 .tile .tile-label { font-weight: var(--weight-bold); }
 .tile .tile-count { color: var(--color-text-muted); font-size: var(--text-sm); }
 
-/* ---------- footer (VH-style service bar) ---------- */
+/* ---------- footer (service bar) ---------- */
 
 .portal-footer {
   margin-top: var(--space-7);

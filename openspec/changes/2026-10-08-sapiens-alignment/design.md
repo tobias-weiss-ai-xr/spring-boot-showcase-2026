@@ -3,8 +3,8 @@
 ## Context
 
 CropGuard (Java 21, Spring Boot 3.3.5, JPA+H2, Security/JWT, Actuator, Angular-Frontend)
-soll ein lauffähiges Architektur-Spiegelbild der Bestandsführungs-Modernisierung bei der
-Vereinigten Hagelversicherung werden. Referenz-Referenz ist Sapiens IDITSuite (vgl. SAPIENS.md
+soll ein lauffähiges Architektur-Spiegelbild der Bestandsführungs-Modernisierung bei einem
+führenden Agrarversicherer werden. Referenz-Referenz ist Sapiens IDITSuite (vgl. SAPIENS.md
 im Check-Repo): proprietäres SaaS — Zugang für den Kunden = **Konfiguration (Smart Packs),
 API (ACE), Country-Layer, Erweiterung**, nicht Source-Code. CropGuard bildet diese Muster
 mit Open-Source-Mitteln ab.

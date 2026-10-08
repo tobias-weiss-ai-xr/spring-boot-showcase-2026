@@ -173,13 +173,13 @@ npm start                  # :4200 → proxies /api and /actuator to :8080
 
 Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR. Each role gets its own
 portal (section navigation in the top bar, deep-linkable routes). The frontend is deliberately
-**aligned with what VEREINIGTE HAGEL runs in production (MeineVH®)**: brand green #509e2f/#3c7723,
-MeineVH tile navigation („Kacheln“), and production wording — WEB AV®-style Anbauverzeichnis,
-4-day damage reporting window, member (“Mitglied”) vs. claims expert (“Sachverständige:r”)
-languages, VH tagline and service hotline in the footer:
+**aligned with the production member portals of leading European agricultural insurers**:
+brand green #509e2f/#3c7723, tile navigation („Kacheln“), and established portal wording —
+Anbauverzeichnis, 4-day damage reporting window, member (“Mitglied”) vs. claims expert
+(“Sachverständige:r”) languages, service footer:
 
 - **Landwirt:in portal (`/farmer`)** — five sections:
-  *Übersicht* (MeineVH-style tile grid with live counts, KPI cards: active policies / total
+  *Übersicht* (tile grid with live counts, KPI cards: active policies / total
   coverage / open claims, policy table, claims timeline, live premium quote), *Anbau* (managed
   plot table + create panel), *Meine Verträge* (policy purchase + policy list), *Schaden*
   (guided FNOL wizard + claim history, 4-day reporting hint), *Wetter & Lage* (DWD drought
@@ -193,8 +193,8 @@ languages, VH tagline and service hotline in the footer:
   stepping back
 - **Risk map** — canvas heat map of the DWD drought index grid with plot markers and hover
   tooltip, shown in both portals (`GET /api/risk-map`)
-- **Design system** — every page is styled from the token set in `styles.css` (VH brand green
-  primary, steel-blue accent — both colors lifted from VH production sites, spacing/radius/typography
+- **Design system** — every page is styled from the token set in `styles.css` (brand green
+  primary, steel-blue accent — palette aligned with established insurer portals, spacing/radius/typography
   scales); lists show shimmer skeletons while
   loading and friendly empty states when data is missing; restrained micro-transitions honor
   `prefers-reduced-motion`; layout is usable down to 360 px (tables scroll horizontally, grids

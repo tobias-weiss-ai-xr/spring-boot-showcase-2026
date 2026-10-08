@@ -2,13 +2,13 @@
 
 ## Why
 
-Die Vereinigte Hagelversicherung VVaG (Zielarbeitgeber, Bewerbungsgespräch am 14.10.2026) ersetzt ihre
+Ein führender europäischer Agrarversicherer (Zielkontext dieses Showcases) ersetzt seine
 Bestandsführung durch **Sapiens IDITSuite** (PolicyMaster/BillingMaster/ClaimsMaster, Low-Code-"Smart
 Packs", API-Layer "ACE", Country-Layer, DataSuite mit Power-BI-Reports, DigitalSuite-Portale). Die
 ausgeschriebene Rolle "(Senior) Software Developer" dreht sich genau um diese Modernisierung.
 
 **Wichtig zur Frage "kommt man an den Source Code?"**: Nein. Sapiens IDITSuite ist proprietäre
-kommerzielle Software (SaaS, kein öffentlicher Quellcode). Auch als Kunde/Entwickler bei der VH bekommt
+kommerzielle Software (SaaS, kein öffentlicher Quellcode). Auch als Kunde/Entwickler beim Versicherer bekommt
 man den Kern-Source nicht — man **konfiguriert** (Low-Code/"Smart Packs"), **integriert** über die
 offene API-Schicht (ACE: REST/OpenAPI) und erweitert über den **Country/Customer-Layer**.
 CropGuard kann Sapiens daher nicht am Code nachbauen — sondern am **Architektur-Muster**:

@@ -1,6 +1,6 @@
 # CropGuard — Epics & User Stories (Produkt-Roadmap)
 
-Stand: 2026-10-08 · Quelle: VH/Sapiens-Ökosystemanalyse (README „Sapiens Mapping", arc42 03/04).
+Stand: 2026-10-08 · Quelle: Ökosystemanalyse führender Agrarversicherer (README „Sapiens Mapping“, arc42 03/04).
 Zweck: Jede künftige OpenSpec-Change hängt an genau einem Epic hier — kein Feature ohne Story.
 
 ## Personas
@@ -13,7 +13,7 @@ Zweck: Jede künftige OpenSpec-Change hängt an genau einem Epic hier — kein F
 
 ## Epics
 
-### E1 — Vertrieb & Anbaudeklaration (Sapiens: PolicyMaster + WEB AV®)
+### E1 — Vertrieb & Anbaudeklaration (Sapiens: PolicyMaster + Anbaudeklaration)
 | # | User Story | Akzeptanz (Skizze) | Design-Implication |
 |---|---|---|---|
 | 1.1 ✅ | Als Landwirt kalkuliere ich die Prämie für ein Feldstück vor dem Abschluss | Quote aus Kultur/Fläche/Bundesland/Selbstbehalt/Lage | Rating-Packs (YAML) statt Enum-Zahlen |
@@ -31,7 +31,7 @@ Zweck: Jede künftige OpenSpec-Change hängt an genau einem Epic hier — kein F
 | 2.4 ✗ | Als Beteiligter sehe ich den Schadenverlauf (wer/wann/was) | Timeline: SUBMITTED→UNDER_REVIEW→ASSESSED→PAID | **Claim-Event-Log** (append-only), Statuswechsel schreiben Event statt nur Feld — Basis für Audit (E6) |
 | 2.5 ✗ | Als Sachbearbeiter dokumentiere ich die Auszahlung | Status `PAID` + Betrag/Datum | Settlement-Datensatz, Übergang nur aus `APPROVED` (Whitelist-Muster vorhanden) |
 
-### E3 — Wetter & Prävention (VH: MeineVH Wetter, Hagelwarnung)
+### E3 — Wetter & Prävention (Agrarversicherer-Portal: Feldstück-Wetter, Hagelwarnung)
 | # | User Story | Akzeptanz | Design-Implication |
 |---|---|---|---|
 | 3.1 ✅ | Als Landwirt/Sachbearbeiter sehe ich das Risikolagebild (Trockenindex, Hagelereignisse) | Lage-Sektion mit Karte + Feed | DWD-Grid-Service, HailEvent-Feed |
@@ -90,14 +90,14 @@ Zweck: Jede künftige OpenSpec-Change hängt an genau einem Epic hier — kein F
 | Existierende Change | Bedient Epic |
 |---|---|
 | `sapiens-alignment` (Rating-Packs, Module, OpenAPI, Legacy-Import) | E6.1–6.3, E1.1 |
-| `vh-portal-ecosystem` (Persona-Portale, FNOL-Wizard, Workbench, Design-System) | E1.2, E2.1, E2.2, E3.1, E4.1 |
+| `portal-ecosystem` (Persona-Portale, FNOL-Wizard, Workbench, Design-System) | E1.2, E2.1, E2.2, E3.1, E4.1 |
 | Persistence-Deploy (H2-Volume) | E6.6-Vorarbeit |
 
 ## Priorisierung (nächste Changes)
 
 1. **E2.3 + E2.4 (Fotos + Claim-Event-Log)** — höchster Demo-Wert („realer Schadenfall"),
    Event-Log ist Fundament für 6.4/7.1, Storage-Abstraktion zeigt Trust-Boundary-Handwerk.
-2. **E3.2 + E3.3 (Feldstück-Ereignisbezug + Benachrichtigung)** — der VH-Wettbewerbsvorteil
+2. **E3.2 + E3.3 (Feldstück-Ereignisbezug + Benachrichtigung)** — der Wettbewerbsvorteil
    (Wetter datengetrieben), erster Scheduled-Job + Outbox.
 3. **E4.2 (Rechnungen)** — füllt BillingMaster-Story, koppelt Module über Ports.
 4. **E6.4 + E6.5 (Audit + Metriken)** — Betriebssicht, billige Punkte auf dem Event-Log.
