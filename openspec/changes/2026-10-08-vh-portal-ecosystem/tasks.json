@@ -21,53 +21,64 @@
         "frontend/src/app/pages/forbidden/",
         "frontend/src/app/pages/farmer/",
         "frontend/src/app/pages/assessor/",
-        "frontend/src/e2e/"
+        "frontend/e2e/"
       ],
-      "accept": "cd frontend && npx ng build && CI=true npx playwright test",
+      "accept": "cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "Token design system in place; shell renders role-specific portal navigation with role badge; dashboards split into child section routes (/farmer/uebersicht|anbau|vertraege|schaeden|lage, /assessor/aufgaben|lagebild) reachable via nav and deep-links; /farmer and /assessor redirect to first section; login/register polished with the new design (demo-credentials hint still present); ng build green; Karma green; full Playwright suite green (e2e navigation adjusted only where routes changed)."
     },
     {
       "id": "UI-2",
       "title": "Farmer customer-360: shared UI primitives (Badge/KpiCard/Skeleton/EmptyState as standalone components), Übersicht section with KPI cards (active policies, total coverage, open claims) + policy table with status badges and premium column + recent-claims timeline; Anbau as managed plot table with side-panel create form (WEB AV pattern); Verträge section as policy detail table — all from existing endpoints with skeleton loading",
-      "deps": ["UI-1"],
+      "deps": [
+        "UI-1"
+      ],
       "scope": [
         "frontend/src/app/shared/ui/",
         "frontend/src/app/pages/farmer/",
         "frontend/src/app/models.ts",
         "frontend/src/styles.css"
       ],
-      "accept": "cd frontend && npx ng build && CI=true npx playwright test",
+      "accept": "cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "Shared primitives exist and are used by farmer sections; Übersicht shows three KPI cards fed from existing endpoints, policy table with status badges + premium, claims timeline; Anbau shows the managed plot table with GK3 coordinates and side-panel create form (create still works via POST /api/plots); skeletons show during loading; ng build green; full Playwright suite green."
     },
     {
       "id": "UI-3",
       "title": "Guided claim journey (FNOL wizard): ClaimWizard standalone component with signal step-state (1 field/policy, 2 event date+cause/hail event, 3 extent/description, 4 summary+confirm), step indicator, per-step validation, step-back; submits the identical POST /api/claims payload; notify() success feedback; claims list with status badges and hail-event linkage; add one wizard happy-path e2e scenario if the flow changed",
-      "deps": ["UI-1"],
+      "deps": [
+        "UI-1"
+      ],
       "scope": [
         "frontend/src/app/pages/farmer/",
         "frontend/src/app/shared/ui/",
-        "frontend/src/e2e/"
+        "frontend/e2e/"
       ],
-      "accept": "cd frontend && npx ng build && CI=true npx playwright test",
+      "accept": "cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "Schäden section opens the wizard; step indicator reflects progress; each step validates before continue; summary shows all values read-only until confirm; submitted claim appears with SUBMITTED badge; payload fields identical to the previous form (policyId, eventDate, description, hailEventId?); existing e2e claim flow green; at most one new scenario added."
     },
     {
       "id": "UI-4",
       "title": "Assessor workbench + Lagebild: Aufgaben section with filterable/sortable claim queue (status chips, entry age, severity) and claim detail with assess panel plus customer/policy context; Lagebild section combining DWD risk map (role=img, aria-label preserved) and hail-event feed with severity badges; workbench KPI row (open items, total claimed amount); existing assess e2e flow unchanged",
-      "deps": ["UI-1"],
+      "deps": [
+        "UI-1"
+      ],
       "scope": [
         "frontend/src/app/pages/assessor/",
         "frontend/src/app/risk-map/",
         "frontend/src/app/shared/ui/",
         "frontend/src/styles.css"
       ],
-      "accept": "cd frontend && npx ng build && CI=true npx playwright test",
+      "accept": "cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "Aufgaben queue filters by status and sorts by age/severity; claim detail shows customer/policy context and the assess panel (decision select + assessment text) still posting PUT /api/claims/{id}/assess; Lagebild shows risk map canvas and hail-event feed with severity badges; KPI row reflects open items and claimed totals; ng build green; full Playwright suite green including the assess flow."
     },
     {
       "id": "UI-5",
       "title": "Polish sweep + full regression + docs: design system applied to every remaining page, responsive at 360px (tables scroll/collapse), a11y pass (AA contrast, focus-visible, labels intact), skeleton/empty states everywhere, restrained micro-transitions; then mvn verify + ng build + Karma + full Playwright; update README (persona portals, claim journey) and arc42 05 (portal sections) + 10 (test totals matching verified suites)",
-      "deps": ["UI-1", "UI-2", "UI-3", "UI-4"],
+      "deps": [
+        "UI-1",
+        "UI-2",
+        "UI-3",
+        "UI-4"
+      ],
       "scope": [
         "frontend/src/",
         "frontend/e2e/",
@@ -76,7 +87,7 @@
         "docs/arc42/10-quality-requirements.md",
         "docs/arc42/08-crosscutting-concepts.md"
       ],
-      "accept": "JAVA_HOME=\"/c/Program Files/Java/jdk-22\" mvn -q verify && cd frontend && npx ng build && CI=true npx playwright test",
+      "accept": "JAVA_HOME=\"/c/Program Files/Java/jdk-22\" mvn -q verify && cd frontend && npx ng build && npx playwright test",
       "acceptance_prose": "No page without the token design; layout usable at 360px; contrast/focus states pass a manual a11y checklist; every list has skeleton + empty state; mvn verify green (42 tests), Karma green, full Playwright suite green; README documents the two persona portals and the guided claim journey; arc42 05 shows the portal sections, arc42 10 carries the exact verified test counts."
     }
   ]
