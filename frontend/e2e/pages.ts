@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-/** Page objects — CropGuard UI (German labels). */
+/** Page objects — CropGuard UI (German labels), one class per portal section (/farmer/*, /assessor/*). */
 
 export class LoginPage {
   constructor(readonly page: Page) {}
@@ -34,46 +34,62 @@ export class RegisterPage {
   }
 }
 
-export class FarmerDashboard {
+/** /farmer/uebersicht — quote calculator. */
+export class FarmerOverview {
   constructor(readonly page: Page) {}
 
-  readonly heading = this.page.getByRole('heading', { name: /Mein Betrieb/ });
-
-  // Quote
-  readonly cropType = this.page.getByLabel('Kultur').first();
+  readonly cropType = this.page.getByLabel('Kultur');
   readonly quotePremium = this.page.locator('.kv dd').first();
+}
 
-  // Plot form
-  readonly plotCropType = this.page.getByLabel('Kultur').nth(1);
-  readonly plotHectares = this.page.getByLabel('Hektar').first();
-  readonly plotBundesland = this.page.getByLabel('Bundesland').nth(1);
-  readonly plotE = this.page.getByLabel('GK3 E').first();
-  readonly plotN = this.page.getByLabel('GK3 N').first();
-  readonly plotDescription = this.page.getByLabel('Beschreibung').first();
+/** /farmer/anbau — plot create form + plot table. */
+export class FarmerAnbau {
+  constructor(readonly page: Page) {}
+
+  readonly cropType = this.page.getByLabel('Kultur');
+  readonly hectares = this.page.getByLabel('Hektar');
+  readonly bundesland = this.page.getByLabel('Bundesland');
+  readonly coordinateE = this.page.getByLabel('GK3 E');
+  readonly coordinateN = this.page.getByLabel('GK3 N');
+  readonly description = this.page.getByLabel('Beschreibung');
   readonly createPlotButton = this.page.getByRole('button', { name: 'Feld anlegen' });
+  readonly plotRows = this.page.locator('section', { hasText: 'Meine Felder' }).locator('tbody tr');
+}
 
-  // Policy form
+/** /farmer/vertraege — policy create form + policy table. */
+export class FarmerVertraege {
+  constructor(readonly page: Page) {}
+
   readonly plotSelect = this.page.getByLabel('Feld', { exact: true });
   readonly coverage = this.page.getByLabel('Deckung (€)');
   readonly coverageStart = this.page.getByLabel('Beginn');
   readonly coverageEnd = this.page.getByLabel('Ende');
   readonly buyPolicyButton = this.page.getByRole('button', { name: 'Police abschließen' });
+  readonly policyRows = this.page.locator('section', { hasText: 'Meine Policen' }).locator('tbody tr');
+}
 
-  // Claim form
+/** /farmer/schaeden — claim form + claim table. */
+export class FarmerSchaeden {
+  constructor(readonly page: Page) {}
+
   readonly policySelect = this.page.getByLabel('Police');
   readonly damageDate = this.page.getByLabel('Schadensdatum');
-  readonly damageDescription = this.page.getByLabel('Beschreibung').nth(1);
+  readonly damageDescription = this.page.getByLabel('Beschreibung');
   readonly fileClaimButton = this.page.getByRole('button', { name: 'Schaden melden' });
-
-  // Tables
-  readonly policyRows = this.page.locator('section', { hasText: 'Meine Policen' }).locator('tbody tr');
   readonly claimRows = this.page.locator('section', { hasText: 'Meine Schäden' }).locator('tbody tr');
 }
 
-export class AssessorDashboard {
+/** /farmer/lage — DWD risk map. */
+export class FarmerLage {
   constructor(readonly page: Page) {}
 
-  readonly heading = this.page.getByRole('heading', { name: 'Gutachter-Portal' });
+  readonly canvas = this.page.locator('canvas');
+  readonly legend = this.page.locator('.legend');
+}
+
+/** /assessor/aufgaben — claim workbench queue + assess panel. */
+export class AssessorAufgaben {
+  constructor(readonly page: Page) {}
 
   claimRow(description: string) {
     return this.page.getByRole('row', { name: new RegExp(description) });
@@ -87,6 +103,11 @@ export class AssessorDashboard {
     await this.page.getByLabel('Anmerkungen').fill(notes);
     await this.page.getByRole('button', { name: 'Entscheidung speichern' }).click();
   }
+}
+
+/** /assessor/lagebild — hail-event feed + risk map. */
+export class AssessorLagebild {
+  constructor(readonly page: Page) {}
 
   readonly hailEventsSection = this.page.locator('section', { hasText: 'Hagelereignisse' });
 }

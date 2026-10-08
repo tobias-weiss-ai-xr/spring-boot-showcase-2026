@@ -1,0 +1,68 @@
+@if (loading()) {
+  <p class="muted">Daten werden geladen …</p>
+}
+@if (flash(); as f) {
+  <div class="alert success" role="status">{{ f }}</div>
+}
+@if (error()) {
+  <div class="alert error" role="alert">{{ error() }}</div>
+}
+
+<div class="grid">
+  <section class="card">
+    <h3>Feld anlegen</h3>
+    <form (ngSubmit)="createPlot()">
+      <div class="row">
+        <label>Kultur
+          <select [(ngModel)]="plotForm.cropType" name="pCropType">
+            @for (c of cropTypes; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label>Hektar
+          <input type="number" min="1" step="0.5" [(ngModel)]="plotForm.hectares" name="pHectares">
+        </label>
+      </div>
+      <div class="row">
+        <label>Bundesland
+          <select [(ngModel)]="plotForm.bundesland" name="pBundesland">
+            @for (bl of bundeslaender; track bl) { <option [value]="bl">{{ bl }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>GK3 E
+          <input type="number" [(ngModel)]="plotForm.coordinateE" name="pE">
+        </label>
+        <label>GK3 N
+          <input type="number" [(ngModel)]="plotForm.coordinateN" name="pN">
+        </label>
+      </div>
+      <label>Beschreibung
+        <input type="text" [(ngModel)]="plotForm.locationDescription" name="pDesc" required>
+      </label>
+      <button type="submit">Feld anlegen</button>
+    </form>
+  </section>
+
+  <section class="card table-card">
+    <h3>Meine Felder</h3>
+    @if (plots().length === 0) {
+      <p class="muted">Noch kein Feld angelegt.</p>
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Kultur</th><th>Fläche</th><th>Bundesland</th><th>Lage</th></tr></thead>
+        <tbody>
+          @for (p of plots(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.cropType }}</td>
+              <td>{{ p.hectares }} ha</td>
+              <td>{{ p.bundesland }}</td>
+              <td>{{ p.locationDescription }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

@@ -1,0 +1,66 @@
+@if (loading()) {
+  <p class="muted">Daten werden geladen …</p>
+}
+@if (flash(); as f) {
+  <div class="alert success" role="status">{{ f }}</div>
+}
+@if (error()) {
+  <div class="alert error" role="alert">{{ error() }}</div>
+}
+
+<div class="grid">
+  <section class="card">
+    <h3>Police abschließen</h3>
+    <form (ngSubmit)="createPolicy()">
+      <label>Feld
+        <select [(ngModel)]="policyForm.plotId" name="plotId" required>
+          @for (p of plots(); track p.id) {
+            <option [value]="p.id">#{{ p.id }} · {{ p.cropType }} · {{ p.hectares }} ha</option>
+          }
+        </select>
+      </label>
+      <div class="row">
+        <label>Deckung (€)
+          <input type="number" min="1000" step="1000" [(ngModel)]="policyForm.coverageEur" name="coverageEur">
+        </label>
+        <label>Selbstbehalt
+          <select [(ngModel)]="policyForm.deductible" name="deductible">
+            @for (d of deductibles; track d) { <option [value]="d">{{ d }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Beginn
+          <input type="date" [(ngModel)]="policyForm.coverageStart" name="start" required>
+        </label>
+        <label>Ende
+          <input type="date" [(ngModel)]="policyForm.coverageEnd" name="end" required>
+        </label>
+      </div>
+      <button type="submit" [disabled]="!plots().length">Police abschließen</button>
+    </form>
+  </section>
+
+  <section class="card table-card">
+    <h3>Meine Policen</h3>
+    @if (policies().length === 0) {
+      <p class="muted">Noch keine Police.</p>
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Feld</th><th>Deckung</th><th>Prämie</th><th>Status</th><th>Laufzeit</th></tr></thead>
+        <tbody>
+          @for (p of policies(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.plot.cropType }} · {{ p.plot.locationDescription }}</td>
+              <td>{{ p.coverageEur | currency:'EUR' }}</td>
+              <td>{{ p.premiumEur | currency:'EUR' }}</td>
+              <td><span class="badge" [class]="'badge ' + p.status.toLowerCase()">{{ p.status }}</span></td>
+              <td>{{ p.coverageStart | date:'dd.MM.yyyy' }} – {{ p.coverageEnd | date:'dd.MM.yyyy' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>
