@@ -25,7 +25,9 @@
     {
       "id": "SA-2",
       "title": "Policy/Billing/Claims module boundaries: introduce com.example.cropguard.modules.{policy,billing,claims} housing module-owned service/repo logic (billing = premium/quote), controllers delegate into modules, layer mapping preserved; add ModuleBoundaryTest asserting no cross-module repository/entity access except explicit allowance",
-      "deps": [],
+      "deps": [
+        "SA-1"
+      ],
       "scope": [
         "src/main/java/com/example/cropguard/modules/",
         "src/main/java/com/example/cropguard/controller/",
@@ -41,7 +43,9 @@
     {
       "id": "SA-3",
       "title": "OpenAPI as published tested contract (ACE pattern): springdoc serves versioned GET /v3/api-docs (OpenAPI 3, info.version from build), module tags; add OpenApiContractTest verifying core paths /api/policies,/api/claims,/api/plots and openapi 3.x",
-      "deps": [],
+      "deps": [
+        "SA-1"
+      ],
       "scope": [
         "src/main/java/com/example/cropguard/config/OpenApiConfig.java",
         "src/main/resources/",
@@ -55,7 +59,9 @@
     {
       "id": "SA-4",
       "title": "Legacy data import with validation report: config-gated (cropguard.legacy-import.enabled, default off) CommandLineRunner reads committed legacy CSV fixture, validates each record, maps valid rows to rating data, reports per-record failures, startup continues; LegacyImportServiceTest",
-      "deps": [],
+      "deps": [
+        "SA-1"
+      ],
       "scope": [
         "src/main/java/com/example/cropguard/service/LegacyImportService.java",
         "src/main/resources/legacy/",
@@ -71,7 +77,12 @@
     {
       "id": "SA-5",
       "title": "README: add 'Sapiens Mapping' section (PolicyMaster/BillingMaster/ClaimsMaster, Smart Packs, country layer, ACE, DigitalSuite, DataSuite) + note that Sapiens is proprietary (config/integration over source access)",
-      "deps": ["SA-1", "SA-2", "SA-3", "SA-4"],
+      "deps": [
+        "SA-1",
+        "SA-2",
+        "SA-3",
+        "SA-4"
+      ],
       "scope": [
         "README.md"
       ],
@@ -83,7 +94,9 @@
     {
       "id": "SA-6",
       "title": "Pre-application acceptance sweep: full backend verify, frontend build, CI green, README quick-start still accurate",
-      "deps": ["SA-5"],
+      "deps": [
+        "SA-5"
+      ],
       "scope": [
         "pom.xml",
         "frontend/",
