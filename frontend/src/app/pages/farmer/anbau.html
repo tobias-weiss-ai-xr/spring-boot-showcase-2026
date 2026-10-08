@@ -1,5 +1,5 @@
 @if (loading()) {
-  <p class="muted">Daten werden geladen …</p>
+  <div class="card"><app-skeleton [lines]="5" /></div>
 }
 @if (flash(); as f) {
   <div class="alert success" role="status">{{ f }}</div>
@@ -8,8 +8,31 @@
   <div class="alert error" role="alert">{{ error() }}</div>
 }
 
-<div class="grid">
-  <section class="card">
+<div class="with-side">
+  <section class="card table-card">
+    <h3>Meine Felder</h3>
+    @if (plots().length === 0) {
+      <app-empty-state message="Noch kein Feld angelegt — legen Sie Ihr erstes Feld im Panel rechts an." />
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Kultur</th><th>Fläche</th><th>Bundesland</th><th>GK3 (E / N)</th><th>Lage</th></tr></thead>
+        <tbody>
+          @for (p of plots(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.cropType }}</td>
+              <td>{{ p.hectares }} ha</td>
+              <td>{{ p.bundesland }}</td>
+              <td class="geo">{{ p.coordinateE ?? '–' }} / {{ p.coordinateN ?? '–' }}</td>
+              <td>{{ p.locationDescription }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <aside class="card side-panel">
     <h3>Feld anlegen</h3>
     <form (ngSubmit)="createPlot()">
       <div class="row">
@@ -42,27 +65,5 @@
       </label>
       <button type="submit">Feld anlegen</button>
     </form>
-  </section>
-
-  <section class="card table-card">
-    <h3>Meine Felder</h3>
-    @if (plots().length === 0) {
-      <p class="muted">Noch kein Feld angelegt.</p>
-    } @else {
-      <table>
-        <thead><tr><th>#</th><th>Kultur</th><th>Fläche</th><th>Bundesland</th><th>Lage</th></tr></thead>
-        <tbody>
-          @for (p of plots(); track p.id) {
-            <tr>
-              <td>{{ p.id }}</td>
-              <td>{{ p.cropType }}</td>
-              <td>{{ p.hectares }} ha</td>
-              <td>{{ p.bundesland }}</td>
-              <td>{{ p.locationDescription }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    }
-  </section>
+  </aside>
 </div>
