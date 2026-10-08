@@ -5,7 +5,8 @@
 | Quality aspect | Quality goal | Verification |
 |----------------|--------------|--------------|
 | Correctness | Claim workflow and premium math must be right | `ClaimServiceTest`, `PolicyServiceTest`, `PremiumCalculator` rules covered |
-| Testability | Real pyramid at three+ levels | 23 backend tests, 2 Karma, 11 Playwright |
+| Usability / Accessibility | Token design on every page, usable at 360 px, AA contrast + focus states, skeleton/empty states | Manual a11y checklist (contrast ratios, `:focus-visible`, labels); responsive layout check at 360 px; flows covered by the Playwright suite |
+| Testability | Real pyramid at three+ levels | 42 backend tests, 2 Karma, 14 Playwright |
 | Demonstrability | Every course module pointable in code | Structure conventions; `docs/arc42` |
 | Performance | Fine for demo scale (in-memory, tiny data) | Not load-tested; risk noted (ADR-005 N+1) |
 | Simplicity | No heavy dependencies; boring, learnable code | Dependency count minimal (12 Maven deps), no UI framework |
@@ -48,7 +49,7 @@
 |-------|-------|---------|----------------|
 | Backend (JUnit + Mockito + slices) | 42 | `mvn test` | Context loads; premium validation via rating packs (fail-fast on invalid YAML, country override); submit/assess; controller contracts + status codes; repository queries; DWD grid lookups; ownership/IDOR rejections; assess decision whitelist; forced-FARMER registration; module boundary integrity; OpenAPI contract paths; legacy CSV import happy path + failure report |
 | Frontend unit (Karma) | 2 | `npm test` | AuthService login request, role signal, logout |
-| Frontend E2E (Playwright) | 12 | `npm run test:e2e` | Login both roles, wrong creds, registration, role guards, live quote, full plot→policy→claim, assess workflow, hail events, risk map rendering, farmer claim scoping |
+| Frontend E2E (Playwright) | 14 | `npm run test:e2e` | Login/registration both roles, wrong creds, portal section nav + legacy redirect, role guards both directions, live quote recalc, full plot→policy→claim lifecycle incl. 4-step FNOL wizard (summary + step-back + hail-event linkage), assessor assess workflow with payout, hail-event feed, farmer claim scoping (IDOR), DWD risk map rendering |
 
 > All three suites run against the same code and were executed green before these documents
 > were written.

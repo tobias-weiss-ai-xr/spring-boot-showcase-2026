@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 
 import { httpErrorDetail } from '../../core/errors';
 import { RiskMap } from '../../risk-map/risk-map';
+import { Skeleton } from '../../shared/ui/skeleton';
 import { Plot } from '../../models';
 
 /** Farmer portal — Lage: DWD drought risk map for the farmer's plots. */
 @Component({
   selector: 'app-farmer-lage',
-  imports: [RiskMap],
+  imports: [RiskMap, Skeleton],
   templateUrl: './lage.html'
 })
 export class Lage implements OnInit {

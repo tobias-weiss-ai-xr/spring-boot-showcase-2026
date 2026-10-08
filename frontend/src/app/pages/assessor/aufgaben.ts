@@ -5,6 +5,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
 import { AssessRequest, Claim, HailEvent } from '../../models';
+import { EmptyState } from '../../shared/ui/empty-state';
 import { KpiCard } from '../../shared/ui/kpi-card';
 import { Skeleton } from '../../shared/ui/skeleton';
 
@@ -17,7 +18,7 @@ const SEVERITY_RANK: Record<string, number> = { LIGHT: 0, MODERATE: 1, SEVERE: 2
 /** Assessor workbench — Aufgaben: KPIs, filterable/sortable claim queue + assess panel. */
 @Component({
   selector: 'app-assessor-aufgaben',
-  imports: [FormsModule, CurrencyPipe, DatePipe, KpiCard, Skeleton],
+  imports: [FormsModule, CurrencyPipe, DatePipe, EmptyState, KpiCard, Skeleton],
   templateUrl: './aufgaben.html'
 })
 export class Aufgaben implements OnInit {
