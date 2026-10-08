@@ -1,0 +1,13 @@
+# Legacy system export — historical crop ratings.
+# Columns: crop,base_rate,risk,bundesland_factor,deductible_percent,deductible_factor
+# Deliberately contains invalid rows: the import must report and skip them, never abort.
+crop,base_rate,risk,bundesland_factor,deductible_percent,deductible_factor
+WHEAT,45.0,LOW,1.0,5.0,0.92
+BARLEY,42.0,LOW,0.9,10.0,0.85
+VINES,280.0,HIGH,1.4,15.0,0.78
+MYSTERY_CROP,30.0,LOW,1.0,5.0,0.90
+CORN,,LOW,1.0,5.0,0.90
+RAPESEED,-50.0,MODERATE,1.1,5.0,0.90
+APPLES,180.0,EXTREME,1.2,5.0,0.90
+POTATOES,55.0,MODERATE,1.1,-5.0,0.90
+TOBACCO,120.0,MODERATE,1.1,5.0,-0.90
