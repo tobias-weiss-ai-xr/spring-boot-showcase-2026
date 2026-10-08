@@ -1,0 +1,60 @@
+<div class="grid">
+  <section class="card">
+    <h3>Prämien-Quote</h3>
+    <form (ngSubmit)="quoteNow()">
+      <div class="row">
+        <label>Kultur
+          <select [(ngModel)]="quote.cropType" name="cropType" (ngModelChange)="quoteNow()">
+            @for (c of cropTypes; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label>Bundesland
+          <select [(ngModel)]="quote.bundesland" name="bundesland" (ngModelChange)="quoteNow()">
+            @for (bl of bundeslaender; track bl) { <option [value]="bl">{{ bl }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Hektar
+          <input type="number" min="1" step="0.5" [(ngModel)]="quote.hectares" name="hectares" (ngModelChange)="quoteNow()">
+        </label>
+        <label>Selbstbehalt
+          <select [(ngModel)]="quote.deductible" name="deductible" (ngModelChange)="quoteNow()">
+            @for (d of deductibles; track d) { <option [value]="d">{{ d }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Deckung (€)
+          <input type="number" min="1000" step="1000" [(ngModel)]="quote.coverageEur" name="coverageEur" (ngModelChange)="quoteNow()">
+        </label>
+        <label>GK3 E
+          <input type="number" [(ngModel)]="quote.coordinateE" name="coordinateE" (ngModelChange)="quoteNow()">
+        </label>
+        <label>GK3 N
+          <input type="number" [(ngModel)]="quote.coordinateN" name="coordinateN" (ngModelChange)="quoteNow()">
+        </label>
+      </div>
+      <button type="submit">Quote berechnen</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h3>Quote-Ergebnis</h3>
+    @if (error()) {
+      <div class="alert error" role="alert">{{ error() }}</div>
+    }
+    @if (quoteResult(); as r) {
+      <dl class="kv">
+        <dt>Prämie (Jahr)</dt><dd>{{ r.premiumEur | currency:'EUR' }}</dd>
+        <dt>Basisprämie</dt><dd>{{ r.baseEur | currency:'EUR' }}</dd>
+        <dt>Hagelrisiko (Bundesland)</dt><dd>× {{ r.riskAdjustment | number:'1.2-2' }}</dd>
+        <dt>Selbstbehalt</dt><dd>× {{ r.deductibleAdjustment | number:'1.2-2' }}</dd>
+        <dt>Dürreindex (DWD)</dt><dd>{{ r.droughtIndex }} (× {{ r.droughtAdjustment | number:'1.2-2' }})</dd>
+      </dl>
+      <p class="muted">Versichern Sie dann Ihre Fläche unter „Verträge“ und schließen Sie eine Police ab.</p>
+    } @else {
+      <p class="muted">Formular ausfüllen — die Quote wird live berechnet.</p>
+    }
+  </section>
+</div>

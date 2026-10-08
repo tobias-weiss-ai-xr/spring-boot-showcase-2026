@@ -1,13 +1,22 @@
 import { test as base, expect, Page, APIRequestContext } from '@playwright/test';
 
-import { LoginPage, RegisterPage, FarmerDashboard, AssessorDashboard } from './pages';
+import {
+  LoginPage,
+  RegisterPage,
+  FarmerOverview,
+  FarmerAnbau,
+  FarmerVertraege,
+  FarmerSchaeden,
+  FarmerLage,
+  AssessorAufgaben,
+  AssessorLagebild,
+} from './pages';
 import { registerFarmer, uniqueEmail } from './helpers/api';
 
 /**
  * Extended fixtures:
  *  - api:      request context for backend seeding
- *  - seedApi:  registers a fresh FARMER via the API for this test
- *  - farmerUi: a fully-authenticated, fresh farmer's page (UI login, alerts auto-accepted)
+ *  - newFarmer:registers a fresh FARMER via the API for this test
  */
 export const test = base.extend<{
   api: APIRequestContext;
@@ -24,22 +33,33 @@ export const test = base.extend<{
   },
 });
 
-export async function loginAsFarmer(page: Page, email: string, password = 'geheim123'): Promise<FarmerDashboard> {
+export async function loginAsFarmer(page: Page, email: string, password = 'geheim123'): Promise<Page> {
   page.on('dialog', d => void d.accept()); // CropGuard confirms mutations with window.alert
   const login = new LoginPage(page);
   await login.goto();
   await login.loginAs(email, password);
-  await expect(page).toHaveURL(/\/farmer$/);
-  return new FarmerDashboard(page);
+  await expect(page).toHaveURL(/\/farmer\/uebersicht$/); // /farmer redirects to the first section
+  return page;
 }
 
-export async function loginAsAssessor(page: Page): Promise<AssessorDashboard> {
+export async function loginAsAssessor(page: Page): Promise<Page> {
   page.on('dialog', d => void d.accept());
   const login = new LoginPage(page);
   await login.goto();
   await login.loginAs('lisa@cropguard.de', 'assessor123');
-  await expect(page).toHaveURL(/\/assessor$/);
-  return new AssessorDashboard(page);
+  await expect(page).toHaveURL(/\/assessor\/aufgaben$/); // /assessor redirects to the first section
+  return page;
 }
 
-export { expect, LoginPage, RegisterPage, FarmerDashboard, AssessorDashboard };
+export {
+  expect,
+  LoginPage,
+  RegisterPage,
+  FarmerOverview,
+  FarmerAnbau,
+  FarmerVertraege,
+  FarmerSchaeden,
+  FarmerLage,
+  AssessorAufgaben,
+  AssessorLagebild,
+};

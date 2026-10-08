@@ -1,45 +1,57 @@
-import { test, expect } from '../fixtures';
-import { loginAsFarmer } from '../fixtures';
+import { test, expect, loginAsFarmer } from '../fixtures';
+import {
+  FarmerOverview,
+  FarmerAnbau,
+  FarmerVertraege,
+  FarmerSchaeden,
+  FarmerLage,
+} from '../pages';
 import { login } from '../helpers/api';
 
-test.describe('Farmer dashboard', () => {
+test.describe('Farmer portal', () => {
   test('quote recalculates when the crop changes', async ({ page, newFarmer }) => {
-    const farmer = await loginAsFarmer(page, newFarmer.email);
+    await loginAsFarmer(page, newFarmer.email);
+    const overview = new FarmerOverview(page);
 
-    await farmer.cropType.selectOption('BARLEY'); // triggers a fresh quote (live recalculation)
-    await expect(farmer.quotePremium).toBeVisible();
-    expect(farmer.quotePremium).not.toBeNull();
+    await overview.cropType.selectOption('BARLEY'); // triggers a fresh quote (live recalculation)
+    await expect(overview.quotePremium).toBeVisible();
 
-    const before = await farmer.quotePremium.textContent();
-    await farmer.cropType.selectOption('HOPS'); // highest-risk crop -> premium must rise
-    await expect(farmer.quotePremium).not.toHaveText(before as string);
-    await expect(farmer.quotePremium).toContainText('€');
+    const before = await overview.quotePremium.textContent();
+    await overview.cropType.selectOption('HOPS'); // highest-risk crop -> premium must rise
+    await expect(overview.quotePremium).not.toHaveText(before as string);
+    await expect(overview.quotePremium).toContainText('€');
   });
 
-  test('full insurance lifecycle: plot → policy → claim', async ({ page, newFarmer }) => {
-    const farmer = await loginAsFarmer(page, newFarmer.email);
-    await expect(farmer.policyRows).toHaveCount(0); // a fresh farmer starts empty
+  test('full insurance lifecycle across sections: plot (Anbau) → policy (Verträge) → claim (Schäden)', async ({ page, newFarmer }) => {
+    await loginAsFarmer(page, newFarmer.email);
 
-    // 1. create a plot
-    await farmer.plotDescription.fill('Mein Weizenfeld in Nordhessen');
-    await farmer.createPlotButton.click();
-    await expect(farmer.plotSelect).not.toBeDisabled();
+    // 1. create a plot in the Anbau section
+    await page.goto('/farmer/anbau');
+    const anbau = new FarmerAnbau(page);
+    await anbau.description.fill('Mein Weizenfeld in Nordhessen');
+    await anbau.createPlotButton.click();
+    await expect(anbau.plotRows).toHaveCount(1);
 
-    // 2. buy a policy for it
-    await farmer.coverageStart.fill('2026-03-01');
-    await farmer.coverageEnd.fill('2026-12-31');
-    await farmer.buyPolicyButton.click();
-    await expect(farmer.policyRows).toHaveCount(1);
-    await expect(farmer.policyRows.first()).toContainText('ACTIVE');
-    await expect(farmer.policyRows.first()).toContainText('25');
+    // 2. buy a policy for it in the Verträge section
+    await page.goto('/farmer/vertraege');
+    const vertraege = new FarmerVertraege(page);
+    await expect(vertraege.policyRows).toHaveCount(0); // a fresh farmer starts empty
+    await vertraege.coverageStart.fill('2026-03-01');
+    await vertraege.coverageEnd.fill('2026-12-31');
+    await vertraege.buyPolicyButton.click();
+    await expect(vertraege.policyRows).toHaveCount(1);
+    await expect(vertraege.policyRows.first()).toContainText('ACTIVE');
+    await expect(vertraege.policyRows.first()).toContainText('25');
 
-    // 3. file a claim under that policy
-    await farmer.damageDate.fill('2026-07-15');
-    await farmer.damageDescription.fill('Vollständiger Ernteverlust durch Hagel');
-    await farmer.fileClaimButton.click();
-    await expect(farmer.claimRows).toHaveCount(1);
-    await expect(farmer.claimRows.first()).toContainText('Vollständiger Ernteverlust durch Hagel');
-    await expect(farmer.claimRows.first()).toContainText('SUBMITTED');
+    // 3. file a claim under that policy in the Schäden section
+    await page.goto('/farmer/schaeden');
+    const schaeden = new FarmerSchaeden(page);
+    await schaeden.damageDate.fill('2026-07-15');
+    await schaeden.damageDescription.fill('Vollständiger Ernteverlust durch Hagel');
+    await schaeden.fileClaimButton.click();
+    await expect(schaeden.claimRows).toHaveCount(1);
+    await expect(schaeden.claimRows.first()).toContainText('Vollständiger Ernteverlust durch Hagel');
+    await expect(schaeden.claimRows.first()).toContainText('SUBMITTED');
   });
 
   test('farmer scoping: GET /api/claims never returns other farmers claims', async ({ page, request, newFarmer }) => {
@@ -57,12 +69,13 @@ test.describe('Farmer dashboard', () => {
 
   test('renders the DWD risk map with drawn grid cells', async ({ page, newFarmer }) => {
     await loginAsFarmer(page, newFarmer.email);
+    await page.goto('/farmer/lage');
+    const lage = new FarmerLage(page);
 
-    const canvas = page.locator('canvas');
-    await expect(canvas).toBeVisible();
+    await expect(lage.canvas).toBeVisible();
 
     // the grid must actually be painted (opaque pixels from the color scale)
-    const opaquePixels = await canvas.evaluate((cv: HTMLCanvasElement) => {
+    const opaquePixels = await lage.canvas.evaluate((cv: HTMLCanvasElement) => {
       const ctx = cv.getContext('2d');
       if (!ctx) return 0;
       const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
@@ -71,6 +84,6 @@ test.describe('Farmer dashboard', () => {
       return n;
     });
     expect(opaquePixels).toBeGreaterThan(10000);
-    await expect(page.locator('.legend')).toContainText('Trockenindex');
+    await expect(lage.legend).toContainText('Trockenindex');
   });
 });

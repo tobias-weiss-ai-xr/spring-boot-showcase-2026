@@ -1,0 +1,37 @@
+@if (loading()) {
+  <p class="muted">Daten werden geladen …</p>
+}
+@if (error()) {
+  <div class="alert error" role="alert">{{ error() }}</div>
+}
+
+<div class="grid">
+  <section class="card table-card">
+    <h3>Hagelereignisse</h3>
+    @if (events().length === 0) {
+      <p class="muted">Keine Hagelereignisse erfasst.</p>
+    } @else {
+      <table>
+        <thead><tr><th>#</th><th>Datum</th><th>Bundesländer</th><th>Schwere</th><th>Korndurchmesser</th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          @for (e of events(); track e.id) {
+            <tr>
+              <td>{{ e.id }}</td>
+              <td>{{ e.eventDate | date:'dd.MM.yyyy' }}</td>
+              <td>{{ e.affectedBundeslaender }}</td>
+              <td><span class="badge" [class]="'badge ' + e.severity.toLowerCase()">{{ e.severity }}</span></td>
+              <td>{{ e.hailstoneDiameterMm ?? '–' }}</td>
+              <td>{{ e.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="card">
+    <h3>Risikokarte <span class="muted">DWD-Trockenindex</span></h3>
+    <app-risk-map [plots]="plots()" />
+    <p class="hint">Weiße Punkte = versicherte Felder im Bestand. Je röter das Gebiet, desto höher der Trockenindex.</p>
+  </section>
+</div>

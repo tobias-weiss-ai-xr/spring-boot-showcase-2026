@@ -4,26 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
-import { RiskMap } from '../../risk-map/risk-map';
-import { Claim, HailEvent, AssessRequest, Plot } from '../../models';
+import { Claim, AssessRequest } from '../../models';
 
+/** Assessor portal — Aufgaben: claim workbench queue + assessment panel. */
 @Component({
-  selector: 'app-assessor-dashboard',
-  imports: [FormsModule, CurrencyPipe, DatePipe, RiskMap],
-  templateUrl: './dashboard.html'
+  selector: 'app-assessor-aufgaben',
+  imports: [FormsModule, CurrencyPipe, DatePipe],
+  templateUrl: './aufgaben.html'
 })
-export class AssessorDashboard implements OnInit {
+export class Aufgaben implements OnInit {
   private http = inject(HttpClient);
 
   readonly claims = signal<Claim[]>([]);
-  readonly events = signal<HailEvent[]>([]);
-  readonly plots = signal<Plot[]>([]);
   readonly statusFilter = signal('ALL');
   readonly selected = signal<Claim | null>(null);
   readonly error = signal('');
   readonly flash = signal('');
   readonly loading = signal(true);
-  private pending = 0;
   private flashTimer: ReturnType<typeof setTimeout> | undefined;
 
   assess: AssessRequest = { damagePercent: 0, decision: 'APPROVED', assessorNotes: '' };
@@ -35,38 +32,19 @@ export class AssessorDashboard implements OnInit {
       : this.claims().filter(c => c.status === this.statusFilter()));
 
   ngOnInit(): void {
-    this.pending = 3;
     this.refreshClaims();
-    this.http.get<HailEvent[]>('/api/hail-events').subscribe({
-      next: e => {
-        this.events.set(e);
-        this.settle();
-      },
-      error: e => {
-        this.error.set(httpErrorDetail(e));
-        this.settle();
-      }
-    });
-    this.http.get<Plot[]>('/api/plots').subscribe({
-      next: p => {
-        this.plots.set(p);
-        this.settle();
-      },
-      error: e => {
-        this.error.set(httpErrorDetail(e));
-        this.settle();
-      }
-    });
-  }
-
-  private settle(): void {
-    if (--this.pending === 0) this.loading.set(false);
   }
 
   refreshClaims(): void {
     this.http.get<Claim[]>('/api/claims').subscribe({
-      next: c => this.claims.set(c),
-      error: e => this.error.set(httpErrorDetail(e))
+      next: c => {
+        this.claims.set(c);
+        this.loading.set(false);
+      },
+      error: e => {
+        this.error.set(httpErrorDetail(e));
+        this.loading.set(false);
+      }
     });
   }
 
@@ -93,7 +71,7 @@ export class AssessorDashboard implements OnInit {
     });
   }
 
-  /** Inline success feedback (auto-dismisses); replaces blocking window.alert. */
+  /** Inline success feedback (auto-dismisses). */
   private notify(msg: string): void {
     this.flash.set(msg);
     clearTimeout(this.flashTimer);

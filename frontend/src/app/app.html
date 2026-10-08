@@ -1,12 +1,25 @@
-<nav class="topbar">
+<header class="topbar">
   <span class="brand">🌾 CropGuard</span>
+  @if (auth.role(); as role) {
+    <nav class="portal-nav" aria-label="Portal-Navigation">
+      @for (item of nav(); track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+      }
+    </nav>
+  }
   @if (auth.user(); as u) {
     <span class="user">
-      {{ u.name }} · {{ u.role }}
+      {{ u.name }} ·
+      <span class="badge" [class]="'badge role-' + u.role.toLowerCase()">{{ u.role }}</span>
       <a class="logout" href="#" (click)="$event.preventDefault(); logout()">Abmelden</a>
     </span>
   }
-</nav>
+</header>
+@if (auth.user()) {
+  <div class="portal-head">
+    <h1>{{ portalTitle() }}</h1>
+  </div>
+}
 <main>
   <router-outlet />
 </main>

@@ -1,27 +1,39 @@
-<div class="auth-card">
-  <h1>CropGuard</h1>
-  <p class="muted">Anmeldung · German agricultural hail insurance demo</p>
+<div class="auth-split">
+  <div class="auth-aside">
+    <span class="auth-brand">🌾 CropGuard</span>
+    <h1>Willkommen zurück</h1>
+    <p>Ihr Portal für Hagel- und Ernteversicherung — Quote, Police und Schadenmeldung an einem Ort.</p>
+    <ul class="auth-points">
+      <li>Prämien in Echtzeit berechnen</li>
+      <li>Felder und Policen verwalten</li>
+      <li>Schäden digital melden und verfolgen</li>
+    </ul>
+  </div>
+  <div class="auth-panel">
+    <h2>Anmelden</h2>
+    <p class="muted">German agricultural hail insurance demo</p>
 
-  @if (error()) {
-    <div class="alert error" role="alert">{{ error() }}</div>
-  }
+    @if (error()) {
+      <div class="alert error" role="alert">{{ error() }}</div>
+    }
 
-  <form (ngSubmit)="submit()">
-    <label>
-      E-Mail
-      <input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" autocomplete="email" required>
-    </label>
-    <label>
-      Passwort
-      <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" autocomplete="current-password" required>
-    </label>
-    <button type="submit" [disabled]="busy()">{{ busy() ? 'Anmelden…' : 'Anmelden' }}</button>
-  </form>
+    <form (ngSubmit)="submit()">
+      <label>
+        E-Mail
+        <input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" autocomplete="email" required>
+      </label>
+      <label>
+        Passwort
+        <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" [disabled]="busy()">{{ busy() ? 'Anmelden…' : 'Anmelden' }}</button>
+    </form>
 
-  <div class="hint">
-    <strong>Demo-Zugänge</strong>
-    <div>FARMER: <code>max@bauernhof.de</code> / <code>passwort123</code></div>
-    <div>ASSESSOR: <code>lisa@cropguard.de</code> / <code>assessor123</code></div>
-    <a routerLink="/register">Noch kein Konto? Registrieren</a>
+    <div class="hint">
+      <strong>Demo-Zugänge</strong>
+      <div>FARMER: <code>max@bauernhof.de</code> / <code>passwort123</code></div>
+      <div>ASSESSOR: <code>lisa@cropguard.de</code> / <code>assessor123</code></div>
+      <a routerLink="/register">Noch kein Konto? Registrieren</a>
+    </div>
   </div>
 </div>
