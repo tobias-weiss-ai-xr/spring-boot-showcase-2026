@@ -11,9 +11,9 @@ Externalise rating values (crop base rates/risk categories, Bundesland factors, 
 Introduce `com.example.cropguard.modules.{policy,billing,claims}` housing module-owned service/repository logic (billing = premium/quote), keep controllers delegating into modules, preserve layer mapping. Add an architectural boundary test asserting modules do not directly access another module's repositories/entities except via an explicit allowance (facade/port). All existing endpoint tests stay green (same status codes/payloads for quote, claims submit, assess).
 
 ## Task SA-3: OpenAPI contract test (ACE pattern)
-**Scope:** `src/main/java/com/example/cropguard/config/OpenApiConfig.java`, `application*.yml` (springdoc), `src/test/java/**/OpenApiContractTest.java`, `README.md`
+**Scope:** `src/main/java/com/example/cropguard/config/OpenApiConfig.java`, `application*.yml` (springdoc), `src/test/java/**/OpenApiContractTest.java`
 **Accept:** `mvn test -q`
-Ensure springdoc serves a versioned `GET /v3/api-docs` (OpenAPI 3, info.version from build version), add tags per module, and add OpenApiContractTest verifying the document contains `/api/policies`, `/api/claims`, `/api/plots` and `openapi: 3.x`. Reference the published contract in the README.
+Ensure springdoc serves a versioned `GET /v3/api-docs` (OpenAPI 3, info.version from build version), add tags per module, and add OpenApiContractTest verifying the document contains `/api/policies`, `/api/claims`, `/api/plots` and `openapi: 3.x`. (README cross-reference is handled in SA-5.)
 
 ## Task SA-4: Legacy data import with validation report
 **Scope:** `src/main/java/com/example/cropguard/service/LegacyImportService.java`, `src/main/resources/legacy/ratings_legacy.csv`, `src/main/java/com/example/cropguard/config/AppProperties.java` (`cropguard.legacy-import.enabled`), `application.yml`, `src/test/java/**/LegacyImportServiceTest.java`

@@ -1,0 +1,99 @@
+{
+  "_meta": {
+    "project": "spring-boot-showcase-2026",
+    "change": "2026-10-08-sapiens-alignment",
+    "openspec": "openspec/changes/2026-10-08-sapiens-alignment"
+  },
+  "tasks": [
+    {
+      "id": "SA-1",
+      "title": "Rating packs (Smart Packs + country layer): externalise crop/base/deductible ratings from enums into loader-validated YAML rating packs via RatingPackService; enums become catalog keys; add default + PL override pack; fail-fast on invalid packs; wire PremiumCalculator/quote through the service; add RatingPackServiceTest",
+      "deps": [],
+      "scope": [
+        "src/main/java/com/example/cropguard/service/RatingPackService.java",
+        "src/main/resources/rating/",
+        "src/main/java/com/example/cropguard/domain/",
+        "src/main/java/com/example/cropguard/service/PremiumCalculator.java",
+        "src/main/java/com/example/cropguard/config/AppProperties.java",
+        "src/test/java/"
+      ],
+      "accept": "mvn test -q",
+      "acceptance_prose": "Externalise all rating values (CropType base rates + risk categories, Bundesland risk factors, Deductible premium factors) into YAML rating packs under src/main/resources/rating/ (default.yml + one override pack, e.g. pl.yml). Add RatingPackService that loads+validates packs at startup (unknown key or non-positive value => fail fast) and exposes lookups (baseRateFor/riskFactorFor/premiumFactorFor with country override). Enums keep only identifiers and names, no numeric ratings. PremiumCalculator and quote flow resolve values through RatingPackService (default country DE). Add RatingPackServiceTest: default lookup, invalid pack fails startup, country override wins. All existing tests stay green.",
+      "manual": false,
+      "priority": 1
+    },
+    {
+      "id": "SA-2",
+      "title": "Policy/Billing/Claims module boundaries: introduce com.example.cropguard.modules.{policy,billing,claims} housing module-owned service/repo logic (billing = premium/quote), controllers delegate into modules, layer mapping preserved; add ModuleBoundaryTest asserting no cross-module repository/entity access except explicit allowance",
+      "deps": [],
+      "scope": [
+        "src/main/java/com/example/cropguard/modules/",
+        "src/main/java/com/example/cropguard/controller/",
+        "src/main/java/com/example/cropguard/service/",
+        "src/main/java/com/example/cropguard/repository/",
+        "src/test/java/"
+      ],
+      "accept": "mvn test -q",
+      "acceptance_prose": "Refactor the core into modules policy, billing (premium/quote), claims under com.example.cropguard.modules.*; controllers stay in the controller layer and delegate into the modules so the controller->service->repository layer mapping of the course spec remains recognisable. Add an architectural ModuleBoundaryTest that inspects service+repository classes of the three modules and fails when one module directly references another module's repositories/entities, unless the access pattern is an explicit allowance (facade/port) listed in the test. Behaviour must be identical: POST /api/policies/quote, POST /api/claims, PUT /api/claims/{id}/assess keep their status codes and payloads. All existing tests stay green.",
+      "manual": false,
+      "priority": 2
+    },
+    {
+      "id": "SA-3",
+      "title": "OpenAPI as published tested contract (ACE pattern): springdoc serves versioned GET /v3/api-docs (OpenAPI 3, info.version from build), module tags; add OpenApiContractTest verifying core paths /api/policies,/api/claims,/api/plots and openapi 3.x",
+      "deps": [],
+      "scope": [
+        "src/main/java/com/example/cropguard/config/OpenApiConfig.java",
+        "src/main/resources/",
+        "src/test/java/"
+      ],
+      "accept": "mvn test -q",
+      "acceptance_prose": "Ensure springdoc serves a versioned GET /v3/api-docs returning OpenAPI 3 with info.version derived from the build version, and add module-level API tags (policy/billing/claims). Add OpenApiContractTest (Spring MockMvc against the real context) asserting the document is application/json with openapi: 3.x and contains /api/policies, /api/claims, /api/plots. Do not touch README (owned by SA-5). All tests stay green.",
+      "manual": false,
+      "priority": 2
+    },
+    {
+      "id": "SA-4",
+      "title": "Legacy data import with validation report: config-gated (cropguard.legacy-import.enabled, default off) CommandLineRunner reads committed legacy CSV fixture, validates each record, maps valid rows to rating data, reports per-record failures, startup continues; LegacyImportServiceTest",
+      "deps": [],
+      "scope": [
+        "src/main/java/com/example/cropguard/service/LegacyImportService.java",
+        "src/main/resources/legacy/",
+        "src/main/java/com/example/cropguard/config/AppProperties.java",
+        "src/main/resources/application.yml",
+        "src/test/java/"
+      ],
+      "accept": "mvn test -q",
+      "acceptance_prose": "Add src/main/resources/legacy/ratings_legacy.csv as a legacy fixture (crop, base_rate, risk, bundesland_factor, deductible_percent, deductible_factor; includes a few deliberately invalid rows). Add LegacyImportService with parse+validate+map logic: valid rows apply to rating-pack data, invalid rows (unknown/empty/negative) are collected into a per-record failure report with the reason; the import never aborts startup on invalid rows. Gate it behind cropguard.legacy-import.enabled (default false) as a CommandLineRunner (no new role/endpoint). Add LegacyImportServiceTest for happy path + invalid-row reporting. All tests stay green.",
+      "manual": false,
+      "priority": 2
+    },
+    {
+      "id": "SA-5",
+      "title": "README: add 'Sapiens Mapping' section (PolicyMaster/BillingMaster/ClaimsMaster, Smart Packs, country layer, ACE, DigitalSuite, DataSuite) + note that Sapiens is proprietary (config/integration over source access)",
+      "deps": ["SA-1", "SA-2", "SA-3", "SA-4"],
+      "scope": [
+        "README.md"
+      ],
+      "accept": "grep -qiE 'PolicyMaster' README.md && grep -qiE 'ClaimsMaster' README.md && grep -qiE 'Smart Packs' README.md",
+      "acceptance_prose": "Add a 'Sapiens Mapping' section to the README with a table: PolicyMaster ~ modules.policy/PolicyService, BillingMaster ~ modules.billing (premium/quote), ClaimsMaster ~ modules.claims/ClaimService, Smart Packs ~ rating-pack YAMLs, country layer ~ override packs, ACE ~ OpenAPI contract, DigitalSuite ~ Angular frontend, DataSuite ~ actuator/portfolio data — one sentence each. Add one line clarifying Sapiens IDITSuite is proprietary SaaS (no public source; customers configure/integrate). Keep the existing quick start and API tour accurate.",
+      "manual": false,
+      "priority": 3
+    },
+    {
+      "id": "SA-6",
+      "title": "Pre-application acceptance sweep: full backend verify, frontend build, CI green, README quick-start still accurate",
+      "deps": ["SA-5"],
+      "scope": [
+        "pom.xml",
+        "frontend/",
+        ".github/workflows/",
+        "README.md"
+      ],
+      "accept": "mvn verify -q",
+      "acceptance_prose": "After all SA tasks: run the full build and test suite (mvn verify), confirm the Angular frontend still builds (npm run build), confirm the CI workflow still passes, and confirm the README quick start/API tour is unchanged and accurate. Manual confirmation — no new feature work.",
+      "manual": false,
+      "priority": 4
+    }
+  ]
+}
