@@ -8,7 +8,7 @@ import com.example.cropguard.dto.PolicyDto;
 import com.example.cropguard.entity.Plot;
 import com.example.cropguard.entity.Policy;
 import com.example.cropguard.security.JwtService;
-import com.example.cropguard.service.PolicyService;
+import com.example.cropguard.modules.policy.PolicyService;
 import com.example.cropguard.entity.Insured;
 import com.example.cropguard.service.InsuredService;
 import com.fasterxml.jackson.databind.ObjectMapper;

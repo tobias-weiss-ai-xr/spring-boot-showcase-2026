@@ -1,4 +1,4 @@
-package com.example.cropguard.service;
+package com.example.cropguard.modules.billing;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

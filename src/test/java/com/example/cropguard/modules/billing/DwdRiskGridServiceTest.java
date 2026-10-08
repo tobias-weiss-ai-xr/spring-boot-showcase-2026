@@ -1,4 +1,4 @@
-package com.example.cropguard.service;
+package com.example.cropguard.modules.billing;
 
 import com.example.cropguard.domain.Bundesland;
 import com.example.cropguard.domain.CropType;
