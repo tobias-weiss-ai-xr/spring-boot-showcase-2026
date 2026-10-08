@@ -469,3 +469,14 @@ tbody tr:hover { background: var(--blue-50); }
 .portal-footer strong { color: var(--color-text); }
 
 .user-meta { opacity: 0.85; margin-left: 0.25rem; }
+
+/* ---------- slim scrollbars: discreet, only where content truly overflows ---------- */
+
+* { scrollbar-width: thin; scrollbar-color: var(--gray-300) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-500); }
+
+/* long values (e-mails, descriptions) wrap instead of forcing table scrollbars */
+td, th { overflow-wrap: anywhere; }
