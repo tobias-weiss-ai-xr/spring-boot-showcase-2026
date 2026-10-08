@@ -1,5 +1,5 @@
 @if (loading()) {
-  <p class="muted">Daten werden geladen …</p>
+  <div class="card" aria-hidden="true"><app-skeleton [lines]="6" /></div>
 }
 @if (error()) {
   <div class="alert error" role="alert">{{ error() }}</div>

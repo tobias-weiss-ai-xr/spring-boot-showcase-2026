@@ -1,5 +1,8 @@
 @if (loading()) {
-  <p class="muted">Daten werden geladen …</p>
+  <div class="grid" aria-hidden="true">
+    <div class="card"><app-skeleton [lines]="5" /></div>
+    <div class="card"><app-skeleton [lines]="6" /></div>
+  </div>
 }
 @if (error()) {
   <div class="alert error" role="alert">{{ error() }}</div>
@@ -9,7 +12,7 @@
   <section class="card table-card">
     <h3>Hagelereignisse</h3>
     @if (events().length === 0) {
-      <p class="muted">Keine Hagelereignisse erfasst.</p>
+      <app-empty-state message="Keine Hagelereignisse erfasst." icon="🌩️" />
     } @else {
       <table>
         <thead><tr><th>#</th><th>Datum</th><th>Bundesländer</th><th>Schwere</th><th>Korndurchmesser</th><th>Beschreibung</th></tr></thead>

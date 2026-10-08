@@ -171,20 +171,35 @@ npm install
 npm start                  # :4200 → proxies /api and /actuator to :8080
 ```
 
-Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR.
+Open http://localhost:4200 and log in as the seeded FARMER or ASSESSOR. Each role gets its own
+portal (section navigation in the top bar, deep-linkable routes):
 
-- **FARMER view** — live premium quote (with DWD drought adjustment), register plot → buy policy →
-  file a claim, and lists of own policies/claims
-- **ASSESSOR view** — full claim queue with status filter, assess/approve/reject form, hail events
+- **Landwirt:in portal (`/farmer`)** — five sections:
+  *Übersicht* (KPI cards: active policies / total coverage / open claims, policy table, claims
+  timeline, live premium quote), *Anbau* (managed plot table + create panel), *Verträge*
+  (policy purchase + policy list), *Schäden* (guided FNOL wizard + claim history), *Lage*
+  (DWD drought risk map with plot markers)
+- **Gutachter portal (`/assessor`)** — two sections:
+  *Aufgaben* (claim workbench: KPI row, status-filter/sortable claim queue, assess panel with
+  customer/policy context) and *Lagebild* (hail-event feed + portfolio risk map)
+- **Guided claim journey** — the FNOL wizard walks farmers through four validated steps
+  (1 field/policy → 2 event date + linked hail event → 3 extent/description → 4 read-only
+  summary + confirm) and submits the identical `POST /api/claims` payload; entries survive
+  stepping back
 - **Risk map** — canvas heat map of the DWD drought index grid with plot markers and hover
-  tooltip, shown on both dashboards (`GET /api/risk-map`)
+  tooltip, shown in both portals (`GET /api/risk-map`)
+- **Design system** — every page is styled from the token set in `styles.css` (blue primary,
+  agrarian green accent, spacing/radius/typography scales); lists show shimmer skeletons while
+  loading and friendly empty states when data is missing; restrained micro-transitions honor
+  `prefers-reduced-motion`; layout is usable down to 360 px (tables scroll horizontally, grids
+  collapse); WCAG-AA contrast and `:focus-visible` outlines on all interactive elements
 - **German UI throughout** — `de-DE` formatting for currency/dates (`1.125,00 €`, `dd.MM.yyyy`),
   inline success/error feedback instead of browser dialogs, demo credentials shown on the login page
 - JWT is stored in `localStorage`; an HTTP interceptor attaches it, guards route by role, and a 401
   logs out and returns you to the login page. Server-side, farmers only ever see their own
   plots/policies/claims (tenant scoping), and public registration always creates a FARMER account.
 
-Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 12 e2e tests cover login/registration, role guards, quote recalc, the full plot→policy→claim lifecycle, the assessor claim workflow, and the DWD risk map.
+Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 14 e2e tests cover login/registration for both persona portals, role guards, quote recalc, the full plot→policy→claim lifecycle including the FNOL wizard, the assessor assess workflow, hail events, farmer claim scoping, and the DWD risk map.
 
 ## Architecture Documentation
 

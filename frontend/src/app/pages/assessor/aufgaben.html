@@ -36,8 +36,10 @@
         </select>
       </label>
     </div>
-    @if (filtered().length === 0) {
-      <p class="muted">Keine Schadensfälle in dieser Ansicht.</p>
+    @if (loading()) {
+      <app-skeleton [lines]="5" />
+    } @else if (filtered().length === 0) {
+      <app-empty-state message="Keine Schadensfälle in dieser Ansicht." icon="🗂️" />
     } @else {
       <table>
         <thead><tr><th>#</th><th>Datum</th><th>Alter</th><th>Feld / Kultur</th><th>Beschreibung</th><th>Schwere</th><th>Schaden %</th><th>Auszahlung</th><th>Status</th><th></th></tr></thead>

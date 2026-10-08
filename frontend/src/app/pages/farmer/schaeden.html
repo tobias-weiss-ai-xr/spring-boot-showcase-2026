@@ -1,5 +1,8 @@
 @if (loading()) {
-  <p class="muted">Daten werden geladen …</p>
+  <div class="grid" aria-hidden="true">
+    <div class="card"><app-skeleton [lines]="6" /></div>
+    <div class="card"><app-skeleton [lines]="5" /></div>
+  </div>
 }
 @if (flash(); as f) {
   <div class="alert success" role="status">{{ f }}</div>
@@ -14,7 +17,7 @@
   <section class="card table-card">
     <h3>Meine Schäden</h3>
     @if (claims().length === 0) {
-      <p class="muted">Noch keine Schadensmeldungen.</p>
+      <app-empty-state message="Noch keine Schadensmeldungen — melden Sie einen Hagelschaden mit dem Wizard." icon="⛈️" />
     } @else {
       <table>
         <thead><tr><th>#</th><th>Datum</th><th>Beschreibung</th><th>Hagelereignis</th><th>Schaden %</th><th>Auszahlung</th><th>Status</th></tr></thead>

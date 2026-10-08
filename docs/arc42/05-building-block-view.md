@@ -30,7 +30,7 @@ C4Container
 
 | Container | Technology | Responsibility |
 |-----------|------------|----------------|
-| CropGuard SPA | Angular 20 (standalone) | Login/registration, quote calculator, plot→policy→claim forms, assessor claim queue. JWT held in `localStorage`; `proxy.conf.json` forwards `/api` + `/actuator` to the backend. |
+| CropGuard SPA | Angular 20 (standalone) | Two persona portals (`/farmer` Übersicht/Anbau/Verträge/Schäden/Lage, `/assessor` Aufgaben/Lagebild) with top-bar section nav; quote calculator, guided FNOL wizard, plot→policy→claim forms, claim workbench. Token-based design system (`styles.css`), skeletons/empty states, AA contrast, usable at 360 px. JWT held in `localStorage`; `proxy.conf.json` forwards `/api` + `/actuator` to the backend. |
 | CropGuard REST API | Java 21, Spring Boot 3.3.5 | All business rules (premium calc, claim status machine, coverage validation), JWT auth, persistence, error mapping, actuator endpoints. |
 | H2 Database | H2 in-memory (`create-drop`) | Persistence of the insurance model. Re-seeded by `DataInitializer` on every boot. |
 | DWD drought grid | ASCII raster (`.asc.gz`) | 1991–2020 July drought index at 1 km; looked up by GK3 coordinate → premium factor 0.95–1.4 (formula `1 + (index−2)×0.05`, clamped [0.8, 1.5]). Static, so quotes are reproducible. |
@@ -80,27 +80,60 @@ C4Component
 
 ## C4 Level 3 — Frontend components (Angular)
 
+The SPA is split into two role portals; each portal section is a standalone routed component
+under `/farmer/*` resp. `/assessor/*` (guarded by role, deep-linkable, top-bar section nav).
+
 ```mermaid
 C4Component
   title Component diagram for the CropGuard Angular SPA
 
   Container_Boundary(spa, "CropGuard SPA") {
-    Component(shell, "App", "root component", "top bar, logout, router outlet")
+    Component(shell, "App", "root component", "top bar, portal nav, role badge, router outlet")
     Component(authSvc, "AuthService", "service (signals)", "login/register/logout; session in localStorage")
     Component(int, "authInterceptor", "HTTP interceptor", "attaches Bearer token; handles 401")
     Component(guard, "AuthGuard", "route guard", "FARMER vs ASSESSOR role gating")
-    Component(login, "Login / Register", "pages", "credential forms")
-    Component(farmer, "FarmerDashboard", "page", "quote calc, plot→policy→claim, own lists")
-    Component(assessor, "AssessorDashboard", "page", "claim queue, assess form, hail events")
+    Component(login, "Login / Register / Forbidden", "pages", "credential forms, role-denied page")
+
+    Component_Boundary(farmerPortal, "Farmer portal (/farmer)") {
+      Component(fUebersicht, "Übersicht", "page", "KPI cards, policy table, claims timeline, live quote calculator")
+      Component(fAnbau, "Anbau", "page", "managed plot table + side-panel create form")
+      Component(fVertraege, "Verträge", "page", "policy purchase form + policy list")
+      Component(fSchaeden, "Schäden + ClaimWizard", "page + wizard", "guided 4-step FNOL journey; claim history table")
+      Component(fLage, "Lage", "page", "DWD risk map with own plot markers")
+    }
+    Component_Boundary(assessorPortal, "Assessor portal (/assessor)") {
+      Component(aAufgaben, "Aufgaben", "page", "workbench: KPI row, filterable/sortable claim queue, assess panel")
+      Component(aLagebild, "Lagebild", "page", "hail-event feed + portfolio risk map")
+    }
+
+    Component(ui, "shared/ui", "primitives", "Badge, KpiCard, Skeleton, EmptyState")
     Component(riskmap, "RiskMap", "canvas component", "DWD drought-grid heat map + plot markers")
+    Component(tokens, "styles.css", "design tokens", "single-source palette/spacing/typography for every page")
     Component(ms, "models.ts", "TS interfaces", "DTO mirrors")
   }
 
   Rel(login, authSvc, "calls")
-  Rel(farmer, authSvc, "user/role")
+  Rel(fUebersicht, authSvc, "user/role")
   Rel(guard, authSvc, "role check")
   Rel(int, authSvc, "token source")
-  Rel(farmer, int, "requests")
-  Rel(assessor, int, "requests")
+  Rel(fUebersicht, int, "requests")
+  Rel(aAufgaben, int, "requests")
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
 ```
+
+**Portal sections**
+
+| Portal | Section (route) | Content |
+|--------|-----------------|---------|
+| Farmer | Übersicht `/farmer/uebersicht` | KPI cards, own policies table, recent-claims timeline, live premium quote calculator |
+| Farmer | Anbau `/farmer/anbau` | Managed plot table + side-panel plot creation (GK3 coordinates) |
+| Farmer | Verträge `/farmer/vertraege` | Policy purchase form + own policy list with status badges |
+| Farmer | Schäden `/farmer/schaeden` | 4-step FNOL wizard (guided claim journey) + claim history with hail-event linkage |
+| Farmer | Lage `/farmer/lage` | DWD drought risk map with own plot markers |
+| Assessor | Aufgaben `/assessor/aufgaben` | Workbench: KPI row (open items / open sum / paid sum), status-filter + sortable claim queue, assess panel with customer/policy context |
+| Assessor | Lagebild `/assessor/lagebild` | Registered hail-event feed (severity badges) + portfolio-wide risk map |
+
+All sections load through the same primitives: shimmer skeletons while data is in flight,
+`EmptyState` placeholders for empty lists, token-based styling (`styles.css`), tables that
+scroll horizontally on small screens (usable at 360 px), WCAG-AA contrast + `:focus-visible`
+everywhere.

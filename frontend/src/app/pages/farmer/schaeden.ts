@@ -4,13 +4,15 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
 import { Badge } from '../../shared/ui/badge';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { Skeleton } from '../../shared/ui/skeleton';
 import { ClaimWizard } from './claim-wizard';
 import { Claim, HailEvent, Policy } from '../../models';
 
 /** Farmer portal — Schäden: FNOL wizard (Schaden melden) + claim history. */
 @Component({
   selector: 'app-farmer-schaeden',
-  imports: [ClaimWizard, Badge, CurrencyPipe, DatePipe],
+  imports: [ClaimWizard, Badge, EmptyState, Skeleton, CurrencyPipe, DatePipe],
   templateUrl: './schaeden.html'
 })
 export class Schaeden implements OnInit {

@@ -5,12 +5,14 @@ import { DatePipe } from '@angular/common';
 
 import { httpErrorDetail } from '../../core/errors';
 import { RiskMap } from '../../risk-map/risk-map';
+import { EmptyState } from '../../shared/ui/empty-state';
+import { Skeleton } from '../../shared/ui/skeleton';
 import { HailEvent, Plot } from '../../models';
 
 /** Assessor portal — Lagebild: hail-event feed + DWD drought risk map. */
 @Component({
   selector: 'app-assessor-lagebild',
-  imports: [FormsModule, DatePipe, RiskMap],
+  imports: [FormsModule, DatePipe, RiskMap, EmptyState, Skeleton],
   templateUrl: './lagebild.html'
 })
 export class Lagebild implements OnInit {

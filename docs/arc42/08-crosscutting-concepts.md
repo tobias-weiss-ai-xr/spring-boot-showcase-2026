@@ -85,11 +85,29 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 - **Auth interceptor**: attaches `Authorization: Bearer …`; on 401 logs out and redirects to `/login`.
 - **Route guards**: `farmerGuard` / `assessorGuard` build a URL tree (`/farmer`, `/assessor`, `/forbidden`).
 - **UI language**: German labels (target audience); `LOCALE_ID = 'de'` — currency, number and
-  date pipes render de-DE (`1.125,00 €`, `dd.MM.yyyy`). Plain CSS design system (`.card`,
-  `.badge`, `.alert`) — no UI framework dependency.
+  date pipes render de-DE (`1.125,00 €`, `dd.MM.yyyy`). Plain CSS design system — no UI
+  framework dependency.
+- **Design tokens**: `styles.css` is the single source of truth — palette (insurance blue
+  primary, agrarian green accent, gray neutrals, status badge pairs), spacing/radius/shadow
+  scales, typography scale. Every page styles exclusively through these tokens; no page-local
+  colors.
+- **Persona portals**: `/farmer` (Übersicht, Anbau, Verträge, Schäden, Lage) and `/assessor`
+  (Aufgaben, Lagebild) share one app shell (top bar, portal nav, role badge) and the shared
+  primitives `Badge`, `KpiCard`, `Skeleton`, `EmptyState`.
+- **Loading + empty conventions**: every list renders shimmer skeletons while data is in flight
+  (`aria-hidden`) and an `EmptyState` placeholder when empty — no blank panes, no unstyled
+  loading text.
+- **Responsive**: layout targets are usable down to 360 px — grids (`kpi-row`, `with-side`,
+  `grid`) collapse to one column at their breakpoints, tables scroll horizontally inside
+  `.table-card`, the top bar wraps, form rows stack ≤ 480 px.
+- **Accessibility**: WCAG-AA contrast is enforced by token choice (muted text and every status
+  badge pair ≥ 4.5:1 on its surface); global `:focus-visible` outlines (white on the dark top
+  bar); all inputs are labelled, filter chips carry `aria-pressed`, the wizard step indicator
+  uses `aria-current="step"`, the risk-map canvas carries `role="img"` + German aria-label.
+- **Motion**: restrained micro-transitions only (hover/focus color fades, 160 ms card fade-in);
+  skeleton shimmer and transitions are disabled under `prefers-reduced-motion`.
 - **Feedback conventions**: errors inline as `.alert.error` (`role="alert"`); successes inline as
   `.alert.success` (`role="status"`, auto-dismiss after 3 s) — no blocking `window.alert` dialogs.
-  Empty tables show a muted hint row; the risk-map canvas carries `role="img"` + German aria-label.
 - **Login page** shows the seeded demo accounts (FARMER / ASSESSOR) for quick demo access.
 
 ## 9. Testing *(module 7)*
@@ -100,4 +118,4 @@ The frontend reads `problem.detail` and shows it in `role="alert"` boxes.
 | Backend slices | `@WebMvcTest` (Auth/Claim/Policy controllers), `@DataJpaTest` (PolicyRepository) | HTTP contracts, validation, security |
 | Backend integration | `@SpringBootTest` | context loads |
 | Frontend unit | Karma/ChromeHeadless | AuthService (login request + session signals) |
-| Frontend E2E | Playwright (POMs, API fixtures) | login/register, role guards, quote, plot→policy→claim, assess workflow |
+| Frontend E2E | Playwright (POMs, API fixtures) | login/register both roles, role guards, quote recalc, FNOL wizard, plot→policy→claim, assess workflow, hail events, scoping, risk map |
