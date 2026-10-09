@@ -9,7 +9,7 @@ CertPrep maps 1:1 to a layer of this codebase.
 ## Domain
 
 Farmers insure plots (Felder) against hail damage. After a hailstorm, they file
-claims (Schaeden) which assessors (Gutachter) review, calculate payouts, and approve.
+claims (Schäden) which claims experts (Sachverständige) review, calculate payouts, and approve.
 
 - **Bundesland-based risk zones** — 16 German federal states with DWD-based hail
   risk factors (Bayern 1.5x, Hessen 1.0x baseline, Schleswig-Holstein 0.8x)
@@ -145,16 +145,19 @@ Each demo concept below corresponds to a Sapiens product area:
 ## Test Pyramid
 
 ```
-        ┌────────────┐
-        │ Integration │  @SpringBootTest — context loads
-        ├────────────┤
-        │   Slices   │  @WebMvcTest (controllers), @DataJpaTest (repository)
-        ├────────────┤
-        │    Unit    │  Mockito — PolicyServiceTest, ClaimServiceTest
-        └────────────┘
+              ┌─────────────────┐
+              │   E2E — 14      │  Playwright: real browser + API + DB, full user flows
+            ┌─┴─────────────────┴─┐
+            │   UI Unit — 2       │  Karma/Jasmine: Angular services in ChromeHeadless
+          ┌─┴─────────────────────┴─┐
+          │   Integration + Slices  │  @SpringBootTest, @WebMvcTest, @DataJpaTest
+          ├─────────────────────────┤
+          │   Unit — 42 backend     │  Mockito — services, controllers, validation
+          └─────────────────────────┘
 ```
 
-Run with `mvn test`. 42 tests, all passing.
+Run: `mvn verify` (backend, 42 tests), `npm test` in `frontend/` (Karma, 2),
+`npx playwright test` in `frontend/` (14). All green on every push (CI).
 
 ## Frontend (Angular)
 
@@ -207,7 +210,59 @@ Anbauverzeichnis, 4-day damage reporting window, member (“Mitglied”) vs. cla
 
 Run the frontend tests with `npm test` (Karma/ChromeHeadless) and the end-to-end suite with `npm run test:e2e` (Playwright; auto-starts both servers, seeds its own data, writes an HTML report you can open with `npm run test:e2e:report`). 14 e2e tests cover login/registration for both persona portals, role guards, quote recalc, the full plot→policy→claim lifecycle including the FNOL wizard, the assessor assess workflow, hail events, farmer claim scoping, and the DWD risk map.
 
-## Architecture Documentation
+## Architecture — C4 Overview
+
+Level 1 — system context:
+
+```mermaid
+C4Context
+  title CropGuard — System Context
+
+  Person(farmer, "Landwirt:in (FARMER)", "verwaltet Feldstücke, kauft Policen, meldet Schäden")
+  Person(assessor, "Sachverständige:r (ASSESSOR)", "prüft und bewertet Schäden im Lagebild")
+
+  System(cropguard, "CropGuard", "Hagel- und Ernteversicherung: Quote, Police, Schaden, Wetter-Lage")
+  System_Ext(dwd, "DWD-Bodenfeuchte-Raster", "1-km-Grid 1991–2020, als Asset gebündelt — kein Live-Abruf")
+
+  Rel(farmer, cropguard, "nutzt", "HTTPS")
+  Rel(assessor, cropguard, "nutzt", "HTTPS")
+  Rel(cropguard, dwd, "liest Grid einmalig beim Start", "Klassenpfad")
+```
+
+Level 2 — containers:
+
+```mermaid
+C4Container
+  title CropGuard — Containers
+
+  Person(farmer, "Landwirt:in", "")
+  Person(assessor, "Sachverständige:r", "")
+
+  Container_Boundary(cropguard, "CropGuard") {
+    Container(spa, "MeineCropGuard SPA", "Angular 20, TypeScript", "Persona-Portale: Anbau, Verträge, Schaden, Wetter & Lage")
+    Container(api, "CropGuard REST API", "Java 21, Spring Boot 3.3.5", "REST, JWT, Fachlogik, JPA")
+    ContainerDb(db, "H2 Database", "H2", "Policen, Feldstücke, Schäden, Hagelereignisse")
+    Container(grid, "DWD-Trockenheits-Grid", ".asc.gz, ~1 km", "Lagefaktor 0,95–1,4 je GK3-Koordinate")
+  }
+
+  Rel(farmer, spa, "nutzt", "HTTPS")
+  Rel(assessor, spa, "nutzt", "HTTPS")
+  Rel(spa, api, "REST/JSON + Bearer JWT", "HTTP")
+  Rel(api, db, "JPA/Hibernate", "JDBC")
+  Rel(api, grid, "lädt beim Start", "Klassenpfad")
+```
+
+| Container | Technologie | Verantwortung |
+|-----------|-------------|---------------|
+| SPA | Angular 20, plain CSS | Zwei Persona-Portale (Landwirt:in: Übersicht/Anbau/Meine Verträge/Schaden/Wetter & Lage; Sachverständige: Aufgaben/Lagebild), FNOL-Wizard, Token-Design-System |
+| REST API | Java 21, Spring Boot | Fachregeln (Prämie, Schaden-Statusmaschine), JWT-Auth, Persistenz, OpenAPI-Vertrag, Actuator |
+| H2 | in-memory (dev, `create-drop`) / File-DB auf Docker-Volume (prod, Env-Override) | Versicherungsbestand; Seeding via `DataInitializer` mit Zählschutz |
+| DWD-Grid | GZIP-ASCII-Raster, statisch | Standortfaktor für Prämien — reproduzierbare Quotes |
+
+Level 3 (Backend-Komponenten, SPA-Komponenten) und Level 4 (Code) sind in
+[`docs/arc42/05`](docs/arc42/05-building-block-view.md) dokumentiert.
+
+## Architecture Documentation (arc42)
 
 The software architecture is documented following the [arc42](https://arc42.org) template with
 full [C4 diagrams](https://c4model.com) (system context, containers, components, code) — see
@@ -225,6 +280,7 @@ src/main/java/com/example/cropguard/
 ├── dto/                         # Records with validation (M4)
 ├── entity/                      # JPA entities (M5)
 ├── exception/                   # RFC 7807 error handling (M6)
+├── i18n/
 ├── modules/                     # policy/billing/claims module boundaries (services)
 ├── repository/                  # Spring Data JPA (M5)
 ├── security/                    # JWT auth (M8)
